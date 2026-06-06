@@ -1,0 +1,9 @@
+model Outcome {
+  id       String @id @default(cuid())
+  marketId String
+  name     String
+
+  market Market @relation(fields: [marketId], references: [id], onDelete: Cascade)
+
+  @@index([marketId])
+}

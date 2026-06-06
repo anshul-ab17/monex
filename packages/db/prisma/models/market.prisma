@@ -1,0 +1,33 @@
+enum MarketType {
+  SPOT
+  PREDICTION
+  PERPETUAL
+}
+
+model Market {
+  id              String      @id @default(cuid())
+  symbol          String      @unique
+  name            String
+  type            MarketType
+
+  baseAssetId     String
+  quoteAssetId    String
+
+  tickSize        Decimal     @db.Decimal(30,10)
+  stepSize        Decimal     @db.Decimal(30,10)
+  minOrderSize    Decimal     @db.Decimal(30,10)
+
+  isActive        Boolean     @default(true)
+
+  createdAt       DateTime    @default(now())
+
+  baseAsset       Asset @relation("BaseAsset", fields: [baseAssetId], references: [id])
+  quoteAsset      Asset @relation("QuoteAsset", fields: [quoteAssetId], references: [id])
+
+  orders          Order[]
+  trades          Trade[]
+  positions       Position[]
+  outcomes        Outcome[]
+
+  @@index([type])
+}

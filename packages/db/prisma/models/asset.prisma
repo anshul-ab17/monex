@@ -1,0 +1,16 @@
+model Asset {
+  id           String   @id @default(cuid())
+  symbol       String   @unique
+  name         String
+  decimals     Int
+  mintAddress  String?  @unique
+  isNative     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  baseMarkets  Market[] @relation("BaseAsset")
+  quoteMarkets Market[] @relation("QuoteAsset")
+
+  balances     Balance[]
+  deposits     Deposit[]
+  withdrawals  Withdrawal[]
+}

@@ -1,0 +1,24 @@
+enum WithdrawalStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model Withdrawal {
+  id        String             @id @default(cuid())
+  userId    String
+  assetId   String
+
+  amount    Decimal            @db.Decimal(30,10)
+
+  txHash    String?
+
+  status    WithdrawalStatus
+
+  createdAt DateTime           @default(now())
+
+  asset Asset @relation(fields: [assetId], references: [id])
+
+  @@index([userId])
+}
