@@ -6,11 +6,12 @@ model Asset {
   mintAddress  String?  @unique
   isNative     Boolean  @default(false)
   createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   baseMarkets  Market[] @relation("BaseAsset")
   quoteMarkets Market[] @relation("QuoteAsset")
 
-  balances     Balance[]
+  balance      Balance[]
   deposits     Deposit[]
   withdrawals  Withdrawal[]
 }

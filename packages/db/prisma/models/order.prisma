@@ -21,6 +21,7 @@ enum OrderStatus {
   REJECTED
 }
 
+
 model Order {
   id            String      @id @default(uuid())
   userId        String
@@ -29,15 +30,18 @@ model Order {
   side          OrderSide
   type          OrderType
   status        OrderStatus @default(OPEN)
-
+  
+  sequenceNumber BigInt     @unique
   price         Decimal?    @db.Decimal(30,10)
   quantity      Decimal     @db.Decimal(30,10)
   filledQty     Decimal     @default(0) @db.Decimal(30,10)
 
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-  events OrderEvent[]
+  events        OrderEvent[]
 
+  buyTrades     Trade[] @relation("BuyOrder")
+  sellTrades    Trade[] @relation("SellOrder")
 
   user   User   @relation(fields: [userId], references: [id])
   market Market @relation(fields: [marketId], references: [id])

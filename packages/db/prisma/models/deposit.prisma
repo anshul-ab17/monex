@@ -14,7 +14,7 @@ model Deposit {
   createdAt DateTime      @default(now())
 
   asset Asset @relation(fields: [assetId], references: [id])
-
+  user  User  @relation(fields: [userId], references: [id])
   @@index([userId])
   @@index([txHash])
 }

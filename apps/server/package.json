@@ -8,5 +8,10 @@
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "dependencies": {
+    "@repo/db": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@repo/eslint-config": "workspace:*"
   }
 }

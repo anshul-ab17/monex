@@ -5,9 +5,11 @@ model User {
   updatedAt     DateTime @updatedAt
 
   sessions      Session[]
-  balances      Balance[]
+  balance      Balance[]
   orders        Order[]
   positions     Position[]
+  deposits      Deposit[]
+  withdraw      Withdrawal[]
 
   @@index([walletAddress])
 }

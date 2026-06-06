@@ -11,8 +11,10 @@ model Trade {
   fee         Decimal   @default(0) @db.Decimal(30,10)
   createdAt   DateTime  @default(now())
 
-  market Market @relation(fields: [marketId], references: [id])
-
+  market    Market @relation(fields: [marketId], references: [id])
+  buyOrder  Order  @relation("BuyOrder", fields: [buyOrderId], references: [id])
+  sellOrder Order  @relation("SellOrder", fields: [sellOrderId], references: [id])
+  
   @@index([marketId])
   @@index([buyerId])
   @@index([sellerId])
