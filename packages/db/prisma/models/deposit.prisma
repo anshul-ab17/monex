@@ -5,16 +5,12 @@ enum DepositStatus {
 }
 
 model Deposit {
-  id        String        @id @default(cuid())
+  id        String        @id @default(uuid())
   userId    String
   assetId   String
-
   txHash    String        @unique
-
   amount    Decimal       @db.Decimal(30,10)
-
   status    DepositStatus
-
   createdAt DateTime      @default(now())
 
   asset Asset @relation(fields: [assetId], references: [id])

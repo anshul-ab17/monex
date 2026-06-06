@@ -5,11 +5,10 @@ enum MarketType {
 }
 
 model Market {
-  id              String      @id @default(cuid())
+  id              String      @id @default(uuid())
   symbol          String      @unique
   name            String
   type            MarketType
-
   baseAssetId     String
   quoteAssetId    String
 
@@ -18,9 +17,7 @@ model Market {
   minOrderSize    Decimal     @db.Decimal(30,10)
 
   isActive        Boolean     @default(true)
-
   createdAt       DateTime    @default(now())
-
   baseAsset       Asset @relation("BaseAsset", fields: [baseAssetId], references: [id])
   quoteAsset      Asset @relation("QuoteAsset", fields: [quoteAssetId], references: [id])
 
@@ -28,6 +25,7 @@ model Market {
   trades          Trade[]
   positions       Position[]
   outcomes        Outcome[]
+  candles         Candle[]
 
   @@index([type])
 }

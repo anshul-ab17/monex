@@ -1,21 +1,14 @@
 model Trade {
-  id          String    @id @default(cuid())
-
+  id          String    @id @default(uuid())
   marketId    String
-
   buyerId     String
   sellerId    String
-
   buyOrderId  String
   sellOrderId String
-
   takerSide   OrderSide
-
   price       Decimal   @db.Decimal(30,10)
   quantity    Decimal   @db.Decimal(30,10)
-
   fee         Decimal   @default(0) @db.Decimal(30,10)
-
   createdAt   DateTime  @default(now())
 
   market Market @relation(fields: [marketId], references: [id])

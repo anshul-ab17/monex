@@ -4,7 +4,7 @@ enum PositionSide {
 }
 
 model Position {
-  id             String       @id @default(cuid())
+  id             String       @id @default(uuid())
 
   userId         String
   marketId       String

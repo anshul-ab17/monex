@@ -1,0 +1,24 @@
+enum OrderEventType {
+  PLACED
+  PARTIALLY_FILLED
+  FILLED
+  CANCELLED
+  EXPIRED
+  REJECTED
+}
+
+model OrderEvent {
+  id String @id @default(uuid())
+  orderId String
+  eventType OrderEventType
+  filledQty Decimal? @db.Decimal(30,10)
+  remainingQty Decimal? @db.Decimal(30,10)
+  price Decimal? @db.Decimal(30,10)
+  reason String?
+
+  createdAt DateTime @default(now())
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([eventType])
+}

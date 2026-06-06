@@ -1,5 +1,5 @@
 model Outcome {
-  id       String @id @default(cuid())
+  id       String @id @default(uuid())
   marketId String
   name     String
 

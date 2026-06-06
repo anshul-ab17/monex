@@ -1,0 +1,32 @@
+enum CandleInterval {
+  M1
+  M5
+  M15
+  M30
+  H1
+  H4
+  D1
+}
+
+model Candle {
+  id String @id @default(uuid())
+  marketId String
+  interval CandleInterval
+
+  open Decimal @db.Decimal(30,10)
+  high Decimal @db.Decimal(30,10)
+  low Decimal @db.Decimal(30,10)
+  close Decimal @db.Decimal(30,10)
+
+  volume Decimal @default(0) @db.Decimal(30,10)
+
+  openTime DateTime
+  closeTime DateTime
+
+  createdAt DateTime @default(now())
+
+  market Market @relation(fields: [marketId], references: [id])
+
+  @@unique([marketId, interval, openTime])
+  @@index([marketId, interval])
+}

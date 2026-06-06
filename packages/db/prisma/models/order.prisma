@@ -22,12 +22,10 @@ enum OrderStatus {
 }
 
 model Order {
-  id            String      @id @default(cuid())
+  id            String      @id @default(uuid())
   userId        String
   marketId      String
-
   clientOrderId String?
-
   side          OrderSide
   type          OrderType
   status        OrderStatus @default(OPEN)
@@ -38,6 +36,8 @@ model Order {
 
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+  events OrderEvent[]
+
 
   user   User   @relation(fields: [userId], references: [id])
   market Market @relation(fields: [marketId], references: [id])

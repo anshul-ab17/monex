@@ -1,5 +1,5 @@
 model Asset {
-  id           String   @id @default(cuid())
+  id           String   @id @default(uuid())
   symbol       String   @unique
   name         String
   decimals     Int

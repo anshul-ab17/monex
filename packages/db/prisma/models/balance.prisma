@@ -1,8 +1,7 @@
 model Balance {
-  id        String  @id @default(cuid())
+  id        String  @id @default(uuid())
   userId    String
   assetId   String
-
   available Decimal @default(0) @db.Decimal(30,10)
   locked    Decimal @default(0) @db.Decimal(30,10)
 
