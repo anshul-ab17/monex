@@ -16,7 +16,7 @@
     "@repo/events": "workspace:*",
     "@repo/types": "workspace:*",
     "@repo/config": "workspace:*",
-    "@repo/pubsub": "workspace:*",
+    "@repo/redis": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "fastify": "^5.8.5",
