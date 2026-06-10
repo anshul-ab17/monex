@@ -47,6 +47,15 @@
         "typescript": "5.9.2",
       },
     },
+    "packages/config": {
+      "name": "config",
+      "devDependencies": {
+        "@types/bun": "latest",
+      },
+      "peerDependencies": {
+        "typescript": "^5",
+      },
+    },
     "packages/db": {
       "name": "@repo/db",
       "dependencies": {
@@ -80,8 +89,26 @@
         "typescript-eslint": "^8.50.0",
       },
     },
+    "packages/events": {
+      "name": "@repo/events",
+      "devDependencies": {
+        "@types/bun": "latest",
+      },
+      "peerDependencies": {
+        "typescript": "^5",
+      },
+    },
+    "packages/pubsub": {
+      "name": "@repo/pubsub",
+      "devDependencies": {
+        "@types/bun": "latest",
+      },
+      "peerDependencies": {
+        "typescript": "^5",
+      },
+    },
     "packages/types": {
-      "name": "types",
+      "name": "@repo/types",
       "dependencies": {
         "zod": "^4.4.3",
       },
@@ -293,6 +320,12 @@
 
     "@repo/eslint-config": ["@repo/eslint-config@workspace:packages/eslint-config"],
 
+    "@repo/events": ["@repo/events@workspace:packages/events"],
+
+    "@repo/pubsub": ["@repo/pubsub@workspace:packages/pubsub"],
+
+    "@repo/types": ["@repo/types@workspace:packages/types"],
+
     "@repo/typescript-config": ["@repo/typescript-config@workspace:packages/typescript-config"],
 
     "@repo/ui": ["@repo/ui@workspace:packages/ui"],
@@ -428,6 +461,8 @@
     "concat-map": ["concat-map@0.0.1", "", {}, "sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg=="],
 
     "confbox": ["confbox@0.2.4", "", {}, "sha512-ysOGlgTFbN2/Y6Cg3Iye8YKulHw+R2fNXHrgSmXISQdMnomY6eNDprVdW9R5xBguEqI954+S6709UyiO7B+6OQ=="],
+
+    "config": ["config@workspace:packages/config"],
 
     "cookie": ["cookie@1.1.1", "", {}, "sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ=="],
 
@@ -988,8 +1023,6 @@
     "typed-array-byte-offset": ["typed-array-byte-offset@1.0.4", "", { "dependencies": { "available-typed-arrays": "1.0.7", "call-bind": "1.0.8", "for-each": "0.3.5", "gopd": "1.2.0", "has-proto": "1.2.0", "is-typed-array": "1.1.15", "reflect.getprototypeof": "1.0.10" } }, "sha512-bTlAFB/FBYMcuX81gbL4OcpH5PmlFHqlCCpAl8AlEzMz5k53oNDvN8p1PNOWLEmI2x4orp3raOFB51tv9X+MFQ=="],
 
     "typed-array-length": ["typed-array-length@1.0.7", "", { "dependencies": { "call-bind": "1.0.8", "for-each": "0.3.5", "gopd": "1.2.0", "is-typed-array": "1.1.15", "possible-typed-array-names": "1.1.0", "reflect.getprototypeof": "1.0.10" } }, "sha512-3KS2b+kL7fsuk/eJZ7EQdnEmQoaho/r6KUef7hxvltNA5DR8NAUM+8wJMbJyZ4G9/7i3v5zPBIMN5aybAh2/Jg=="],
-
-    "types": ["types@workspace:packages/types"],
 
     "typescript": ["typescript@5.9.2", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-CWBzXQrc/qOkhidw1OzBTQuYRbfyxDXJMVJ1XNwUHGROVmuaeiEm3OslpZ1RV96d7SKKjZKrSJu3+t/xlw3R9A=="],
 
