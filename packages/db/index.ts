@@ -5,6 +5,9 @@ const adapter = new PrismaPg({
   connectionString: Bun.env.DATABASE_URL!,
 });
 
-export const prisma = new PrismaClient({
+
+const prisma = new PrismaClient({
   adapter,
 });
+
+export default prisma;

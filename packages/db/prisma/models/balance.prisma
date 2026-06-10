@@ -1,13 +1,13 @@
-// model Balance {
-//   id        String  @id @default(uuid())
-//   userId    String
-//   assetId   String
-//   available Decimal @default(0) @db.Decimal(30,10)
-//   locked    Decimal @default(0) @db.Decimal(30,10)
+model Balance {
+  id        String  @id @default(uuid())
+  userId    String
+  assetId   String
+  available Decimal @default(0) @db.Decimal(30,10)
+  locked    Decimal @default(0) @db.Decimal(30,10)
 
-//   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-//   asset Asset @relation(fields: [assetId], references: [id])
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  asset Asset @relation(fields: [assetId], references: [id])
 
-//   @@unique([userId, assetId])
-//   @@index([userId])
-// }
+  @@unique([userId, assetId])
+  @@index([userId])
+}

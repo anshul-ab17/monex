@@ -5,7 +5,7 @@ model User {
   updatedAt     DateTime @updatedAt
 
   sessions      Session[]
-  balance      Balance[]
+  balance       Balance[]
   orders        Order[]
   positions     Position[]
   deposits      Deposit[]
