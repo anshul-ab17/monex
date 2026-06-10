@@ -1,7 +1,15 @@
-import { prisma } from "@repo/db";
+import fastify from "fastify";
 
-const user = await prisma.user.findUnique({
-  where: {
-    id: 1,
-  },
+const app = fastify();
+
+app.get("/health", async() =>{
+  return {
+    status: "ok"
+  };
 });
+
+app.listen({
+  port: 3000,
+  host: "0.0.0.0"
+});
+
