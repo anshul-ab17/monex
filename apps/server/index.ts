@@ -1,4 +1,5 @@
 import fastify from "fastify";
+import { env } from "@repo/config";
 
 const app = fastify();
 
@@ -9,7 +10,7 @@ app.get("/health", async() =>{
 });
 
 app.listen({
-  port: 3000,
+  port:Number(env.PORT) || 3000,
   host: "0.0.0.0"
 });
-
+console.log(`server is running on :${env.PORT}`);
