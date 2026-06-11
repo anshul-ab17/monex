@@ -4,12 +4,13 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  sessions      Session[]
-  balance       Balance[]
-  orders        Order[]
-  positions     Position[]
-  deposits      Deposit[]
-  withdraw      Withdrawal[]
+  sessions       Session[]
+  balance        Balance[]
+  orders         Order[]
+  positions      Position[]
+  deposits       Deposit[]
+  withdraw       Withdrawal[]
+  ledgerAccounts LedgerAccount[]
 
   @@index([walletAddress])
 }

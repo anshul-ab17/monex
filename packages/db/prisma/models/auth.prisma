@@ -9,3 +9,5 @@ model Session {
 
   @@index([userId])
 }
+
+

@@ -1,0 +1,15 @@
+model AuditLog {
+  id String @id @default(uuid())
+
+  actorId String?
+  action String
+
+  entityType String
+  entityId String
+  metadata Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([actorId])
+  @@index([entityType, entityId])
+}

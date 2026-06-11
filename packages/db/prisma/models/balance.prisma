@@ -5,9 +5,12 @@ model Balance {
   available Decimal @default(0) @db.Decimal(30,10)
   locked    Decimal @default(0) @db.Decimal(30,10)
 
+  updatedAt DateTime @updatedAt
+
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   asset Asset @relation(fields: [assetId], references: [id])
 
   @@unique([userId, assetId])
   @@index([userId])
 }
+

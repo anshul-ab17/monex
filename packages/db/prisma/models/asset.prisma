@@ -11,7 +11,8 @@ model Asset {
   baseMarkets  Market[] @relation("BaseAsset")
   quoteMarkets Market[] @relation("QuoteAsset")
 
-  balance      Balance[]
-  deposits     Deposit[]
-  withdrawals  Withdrawal[]
+  balance        Balance[]
+  deposits       Deposit[]
+  withdrawals    Withdrawal[]
+  ledgerAccounts LedgerAccount[]
 }

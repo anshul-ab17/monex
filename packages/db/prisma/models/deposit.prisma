@@ -10,6 +10,9 @@ model Deposit {
   assetId   String
   txHash    String        @unique
   amount    Decimal       @db.Decimal(30,10)
+  
+  blockHeight   BigInt?
+  confirmations Int           @default(0)
   status    DepositStatus
   createdAt DateTime      @default(now())
 

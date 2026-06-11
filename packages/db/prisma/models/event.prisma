@@ -1,0 +1,9 @@
+model EventStore {
+  id String @id @default(uuid())
+
+  subject String
+  payload Json
+  createdAt DateTime @default(now())
+
+  @@index([subject])
+}

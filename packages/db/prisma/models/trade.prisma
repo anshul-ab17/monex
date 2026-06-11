@@ -3,8 +3,13 @@ model Trade {
   marketId    String
   buyerId     String
   sellerId    String
+
+  makerOrderId  String
+  takerOrderId  String
+
   buyOrderId  String
   sellOrderId String
+  
   takerSide   OrderSide
   price       Decimal   @db.Decimal(30,10)
   quantity    Decimal   @db.Decimal(30,10)
