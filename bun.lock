@@ -19,7 +19,7 @@
         "@repo/db": "workspace:*",
         "@repo/eslint-config": "workspace:*",
         "@repo/events": "workspace:*",
-        "@repo/pubsub": "workspace:*",
+        "@repo/redis": "workspace:*",
         "@repo/types": "workspace:*",
         "@repo/typescript-config": "workspace:*",
         "fastify": "^5.8.5",
@@ -106,17 +106,8 @@
         "typescript": "^5",
       },
     },
-    "packages/pubsub": {
-      "name": "@repo/pubsub",
-      "devDependencies": {
-        "@types/bun": "latest",
-      },
-      "peerDependencies": {
-        "typescript": "^5",
-      },
-    },
     "packages/redis": {
-      "name": "redis",
+      "name": "@repo/redis",
       "devDependencies": {
         "@types/bun": "latest",
       },
@@ -126,9 +117,6 @@
     },
     "packages/types": {
       "name": "@repo/types",
-      "dependencies": {
-        "zod": "^4.4.3",
-      },
       "devDependencies": {
         "@types/bun": "latest",
       },
@@ -155,6 +143,18 @@
         "@types/react-dom": "19.2.2",
         "eslint": "^9.39.1",
         "typescript": "5.9.2",
+      },
+    },
+    "packages/validation": {
+      "name": "validation",
+      "dependencies": {
+        "zod": "^4.4.3",
+      },
+      "devDependencies": {
+        "@types/bun": "latest",
+      },
+      "peerDependencies": {
+        "typescript": "^5",
       },
     },
   },
@@ -341,7 +341,7 @@
 
     "@repo/events": ["@repo/events@workspace:packages/events"],
 
-    "@repo/pubsub": ["@repo/pubsub@workspace:packages/pubsub"],
+    "@repo/redis": ["@repo/redis@workspace:packages/redis"],
 
     "@repo/types": ["@repo/types@workspace:packages/types"],
 
@@ -915,8 +915,6 @@
 
     "real-require": ["real-require@0.2.0", "", {}, "sha512-57frrGM/OCTLqLOAh0mhVA9VBMHd+9U7Zb2THMGdBUoZVOtGbJzjxsYGDJ3A9AYYCP4hn6y1TVbaOfzWtm5GFg=="],
 
-    "redis": ["redis@workspace:packages/redis"],
-
     "reflect.getprototypeof": ["reflect.getprototypeof@1.0.10", "", { "dependencies": { "call-bind": "1.0.8", "define-properties": "1.2.1", "es-abstract": "1.24.0", "es-errors": "1.3.0", "es-object-atoms": "1.1.1", "get-intrinsic": "1.3.0", "get-proto": "1.0.1", "which-builtin-type": "1.2.1" } }, "sha512-00o4I+DVrefhv+nX0ulyi3biSHCPDe+yLv5o/p6d/UVlirijB8E16FtfwSAi4g3tcqrQ4lRAqQSoFEZJehYEcw=="],
 
     "regexp.prototype.flags": ["regexp.prototype.flags@1.5.4", "", { "dependencies": { "call-bind": "1.0.8", "define-properties": "1.2.1", "es-errors": "1.3.0", "get-proto": "1.0.1", "gopd": "1.2.0", "set-function-name": "2.0.2" } }, "sha512-dYqgNSZbDwkaJ2ceRd9ojCGjBq+mOm9LmtXnAnEGyHhN/5R7iDW2TRw3h+o/jCFxus3P2LfWIIiwowAjANm7IA=="],
@@ -1054,6 +1052,8 @@
     "uri-js": ["uri-js@4.4.1", "", { "dependencies": { "punycode": "2.3.1" } }, "sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg=="],
 
     "valibot": ["valibot@1.2.0", "", { "optionalDependencies": { "typescript": "5.9.2" } }, "sha512-mm1rxUsmOxzrwnX5arGS+U4T25RdvpPjPN4yR0u9pUBov9+zGVtO84tif1eY4r6zWxVxu3KzIyknJy3rxfRZZg=="],
+
+    "validation": ["validation@workspace:packages/validation"],
 
     "web": ["web@workspace:apps/web"],
 

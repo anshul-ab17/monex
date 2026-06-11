@@ -6,7 +6,7 @@ class Env {
 	private	static create() {
 		return z.object({
 				DATABASE_URL: z.url(),
-				JWT_SECRET: z.string().min(8),
+				JWT_SECRET: z.string().min(32),
 				REDIS_URL: z.url(),
 				PORT: z.coerce.number().default(3000),
 				FRONTEND_URL: z.string().default("http://localhost:3001"),
@@ -15,7 +15,12 @@ class Env {
 				USDC_MINT: z.string().default("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"),
 				USDT_MINT: z.string().optional(),
 				KAFKA_BROKER: z.string().default("localhost:9092"),
-				USE_KAFKA: z.string().optional(),
+				USE_KAFKA: z.coerce.boolean().default(true),
+				NODE_ENV: z.enum([
+					"development",
+					"test",
+					"production",
+					]).default("development"),
 		}).parse(Bun.env)
 	}
 
