@@ -5,12 +5,16 @@ enum OrderEventType {
   CANCELLED
   EXPIRED
   REJECTED
+  UPDATED
 }
 
 model OrderEvent {
   id String @id @default(uuid())
   orderId String
-  eventType OrderEventType
+  
+  eventType    OrderEventType
+  eventOffset  BigInt?
+
   filledQty Decimal? @db.Decimal(30,10)
   remainingQty Decimal? @db.Decimal(30,10)
   price Decimal? @db.Decimal(30,10)
