@@ -6,11 +6,15 @@ enum WithdrawalStatus {
 }
 
 model Withdrawal {
-  id        String             @id @default(uuid())
+  id        String   @id @default(uuid())
   userId    String
   assetId   String
-  amount    Decimal            @db.Decimal(30,10)
-  txHash    String?
+  amount    Decimal  @db.Decimal(30,10)
+  
+  destinationAddress String
+  txHash      String?
+  failureReason String?
+
   status    WithdrawalStatus
   createdAt DateTime           @default(now())
   

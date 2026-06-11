@@ -1,0 +1,51 @@
+enum LedgerAccountType {
+    USER
+    EXCHANGE
+    FEES
+    TREASURY
+}
+
+enum LedgerReferenceType {
+  DEPOSIT
+  WITHDRAWAL
+  TRADE
+  FEE
+  ADJUSTMENT
+}
+
+model LedgerEntry {
+  id            String   @id @default(uuid())
+
+  accountId     String
+  amount        Decimal @db.Decimal(30,10)
+  referenceType LedgerReferenceType
+  referenceId   String
+
+  description   String?
+  createdAt     DateTime @default(now())
+  account LedgerAccount @relation(fields: [accountId], references: [id])
+
+  @@index([accountId])
+  @@index([referenceType, referenceId])
+}
+
+
+
+model LedgerAccount {
+  id        String   @id @default(uuid())
+
+  userId    String?
+  assetId   String
+  type      LedgerAccountType
+
+  createdAt DateTime @default(now())
+
+  user    User?  @relation(fields: [userId], references: [id])
+  asset   Asset  @relation(fields: [assetId], references: [id])
+
+  entries LedgerEntry[]
+
+  @@index([userId])
+  @@index([assetId])
+  @@index([type])
+}
