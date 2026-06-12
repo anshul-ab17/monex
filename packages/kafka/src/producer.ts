@@ -1,5 +1,5 @@
 import { kafka } from "./client";
-import { Producer } from "kafkajs";
+import type { Producer } from "kafkajs";
 
 
 class KafkaProducer {
@@ -13,5 +13,20 @@ class KafkaProducer {
         await this.producer.connect();
     }
 
+    async disconnect(){
+        await this.producer.disconnect();
+    }
 
+    async publish(topic:string, event:unknown){
+        await this.producer.send({
+            topic,
+            messages:[
+                {
+                 value:JSON.stringify(event),
+                },
+            ],
+        });
+    }
 }
+
+export const kafkaProducer = new KafkaProducer();
