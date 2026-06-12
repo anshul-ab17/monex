@@ -9,7 +9,10 @@
   "peerDependencies": {
     "typescript": "^5"
   },
-  "exports":{
+  "dependencies": {
+    "ioredis": "^5.11.1"
+  },
+    "exports": {
     ".": "./index.ts"
   }
 }
