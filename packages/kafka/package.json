@@ -1,0 +1,18 @@
+{
+  "name": "kafka",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "exports": {
+    ".": "./index.ts"
+  },
+  "dependencies": {
+    "kafkajs": "^2.2.4"
+  }
+}
