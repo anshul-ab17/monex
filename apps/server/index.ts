@@ -1,6 +1,5 @@
 import fastify from "fastify";
 import cors from "@fastify/cors";
-
 import { env } from "@repo/config";
 import routes from "./routes";
 

@@ -190,6 +190,9 @@ importers:
 
   packages/kafka:
     dependencies:
+      '@repo/events':
+        specifier: workspace:*
+        version: link:../events
       kafkajs:
         specifier: ^2.2.4
         version: 2.2.4
@@ -228,6 +231,10 @@ importers:
       typescript:
         specifier: ^5
         version: 5.9.2
+    devDependencies:
+      '@types/bun':
+        specifier: latest
+        version: 1.3.14
 
   packages/types:
     dependencies:
