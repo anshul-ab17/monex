@@ -124,6 +124,9 @@
     },
     "packages/ledger": {
       "name": "ledger",
+      "dependencies": {
+        "@solana/web3.js": "^1.98.4",
+      },
       "devDependencies": {
         "@types/bun": "latest",
       },

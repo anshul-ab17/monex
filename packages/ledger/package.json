@@ -10,6 +10,9 @@
     "typescript": "^5"
   },
   "exports": {
-    ".":"./index.ts"
+    ".": "./index.ts"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.98.4"
   }
 }
