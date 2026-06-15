@@ -1,4 +1,4 @@
-import type { BaseEvent } from "./base.event";
+import type { BaseEvent } from "./base.events";
 
 export enum WalletEventType {
     DEPOSIT_DETECTED = "DEPOSIT_DETECTED",
@@ -14,8 +14,15 @@ export interface DepositConfirmedPayload {
     assetId: string;
 
     amount: string;
-
     txHash: string;
 }
 
+export interface WithdrawalRequestedPayload {
+  userId: string;
+  assetId: string;
+  amount: string;
+  destinationAddress: string;
+}
+
 export type DepositConfirmedEvent = BaseEvent<DepositConfirmedPayload>;
+export type WithdrawalRequestedEvent =  BaseEvent<WithdrawalRequestedPayload>;

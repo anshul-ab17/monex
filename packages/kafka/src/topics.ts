@@ -1,8 +1,10 @@
 export enum KafkaTopics {
-    ORDER ="orders",
+    ORDERS ="orders",
     TRADES ="trades",
     LEDGER = "ledger",
     
     WALLETS = "wallets",
     AUTH = "auth"
 }
+
+

@@ -1,4 +1,4 @@
-import type { BaseEvent } from "./base.event";
+import type { BaseEvent } from "./base.events";
 
 export enum AuthEventType {
     USER_REGISTERED = "USER_REGISTERED",

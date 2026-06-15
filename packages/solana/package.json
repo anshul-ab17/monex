@@ -1,5 +1,5 @@
 {
-  "name": "@repo/events",
+  "name": "solana",
   "module": "index.ts",
   "type": "module",
   "private": true,
@@ -9,10 +9,9 @@
   "peerDependencies": {
     "typescript": "^5"
   },
-  "exports": {
-    ".": "./index.ts"
-  },
   "dependencies": {
-    "uuid": "^14.0.0"
+    "@solana/web3.js": "^1.98.4",
+    "bs58": "^6.0.0",
+    "tweetnacl": "^1.0.3"
   }
 }

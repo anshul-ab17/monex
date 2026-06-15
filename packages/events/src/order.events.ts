@@ -1,4 +1,4 @@
-import type { BaseEvent } from "./base.event";
+import type { BaseEvent } from "./base.events";
 
 export enum OrderEventType {
     CREATED = "ORDER_CREATED",
@@ -8,6 +8,9 @@ export enum OrderEventType {
     CANCELLED = "ORDER_CANCELLED",
     EXPIRED = "ORDER_EXPIRED",
     REJECTED = "ORDER_REJECTED",
+     
+    RESERVE_REQUESTED = "ORDER_RESERVE_REQUESTED",
+    RELEASE_REQUESTED = "ORDER_RELEASE_REQUESTED",
 }
 
 export interface OrderCreatedPayload {

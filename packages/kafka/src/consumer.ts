@@ -1,35 +1,61 @@
 import { kafka } from "./client";
+import type {
+  Consumer,
+  EachMessagePayload,
+} from "kafkajs";
 
 export class KafkaConsumer {
-    async subscribe(
-        groupId: string,
-        topic : string,
-        handler:(
-            message: unknown,
-        ) => Promise<void>,
-    ) {
-        const consumer =kafka.consumer({groupId});
+  async subscribe<T>(
+    groupId: string,
+    topic: string,
+    handler: (
+      message: T,
+      rawMessage: EachMessagePayload,
+    ) => Promise<void>,
+  ): Promise<Consumer> {
+    const consumer = kafka.consumer({
+      groupId,
+    });
 
-        await consumer.connect();
-        await consumer.subscribe({
-            topic,
-            fromBeginning:false,
-        });
+    await consumer.connect();
 
-        await consumer.run({
-            eachMessage: async ({
-                message,
-            }) => {
-                if (!message.value){
-                    return;
-                }
+    await consumer.subscribe({
+      topic,
+      fromBeginning: false,
+    });
 
-                const payload = JSON.parse(message.value.toString());
+    await consumer.run({
+      eachMessage: async (
+        payload: EachMessagePayload,
+      ) => {
+        const { message } = payload;
 
-                await handler(payload);
-            }
-        });
+        if (!message.value) {
+          return;
+        }
 
-        return consumer;
-    }
+        try {
+          const parsedMessage =
+            JSON.parse(
+              message.value.toString(),
+            ) as T;
+
+          await handler(
+            parsedMessage,
+            payload,
+          );
+        } catch (error) {
+          console.error(
+            `Failed to process message from topic ${topic}`,
+            error,
+          );
+        }
+      },
+    });
+
+    return consumer;
+  }
 }
+
+export const kafkaConsumer =
+  new KafkaConsumer();

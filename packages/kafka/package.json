@@ -13,6 +13,7 @@
     ".": "./index.ts"
   },
   "dependencies": {
-    "kafkajs": "^2.2.4"
+    "kafkajs": "^2.2.4",
+    "@repo/events": "workspace:*"
   }
 }
