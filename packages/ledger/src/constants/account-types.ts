@@ -1,0 +1,9 @@
+export enum AccountType {
+    USER_AVAIABLE,
+    USER_RESERVED,
+
+    TREASURY,
+    FEES,
+    WITHDRAWAL_HOLD,
+    DEPOSIT_PENDING
+}
