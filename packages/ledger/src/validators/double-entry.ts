@@ -1,51 +1,68 @@
-import { ParsedTransactionWithMeta,} from "@solana/web3.js";
-
-import type {
-  TransferInfo,
-} from "../core/transfer";
+import type { ParsedTransactionWithMeta } from "@solana/web3.js";
+import type { TransferInfo } from "../types/transfer";
 
 export function parseTokenTransfer(
-  tx: ParsedTransactionWithMeta,
+    tx: ParsedTransactionWithMeta,
 ): TransferInfo | null {
-  const instructions =
-    tx.transaction.message.instructions;
+    const instructions =
+        tx.transaction.message.instructions;
 
-  for (const instruction of instructions) {
-    if (
-      instruction.program !== "spl-token"
-    ) {
-      continue;
+    for (const instruction of instructions) {
+        if (!("parsed" in instruction)) {
+            continue;
+        }
+
+        if (
+            instruction.program !==
+            "spl-token"
+        ) {
+            continue;
+        }
+
+        const parsed =
+            instruction.parsed;
+
+        if (
+            parsed.type !==
+            "transferChecked"
+        ) {
+            continue;
+        }
+
+        const info = parsed.info;
+
+        const signature =
+            tx.transaction.signatures[0];
+
+        if (!signature) {
+            return null;
+        }
+
+        if (
+            !info.source ||
+            !info.destination ||
+            !info.mint
+        ) {
+            return null;
+        }
+
+        return {
+            sender: info.source,
+
+            recipient:
+                info.destination,
+
+            amount:
+                info.tokenAmount.amount,
+
+            assetId:
+                info.mint,
+
+            signature,
+
+            slot: tx.slot,
+        };
     }
 
-    const parsed =
-      "parsed" in instruction
-        ? instruction.parsed
-        : null;
-
-    if (
-      !parsed ||
-      parsed.type !== "transferChecked"
-    ) {
-      continue;
-    }
-
-    const info = parsed.info;
-
-    return {
-      sender: info.source,
-
-      recipient: info.destination,
-
-      amount: info.tokenAmount.amount,
-
-      assetId: info.mint,
-
-      signature:
-        tx.transaction.signatures[0],
-
-      slot: tx.slot,
-    };
-  }
-
-  return null;
+    return null;
 }

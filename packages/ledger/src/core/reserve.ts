@@ -1,11 +1,8 @@
 export interface ReserveInput {
-  userId: string;
-
-  assetId: string;
-
-  amount: string;
-
-  referenceId: string;
+    userId: string;
+    assetId: string;
+    amount: string;
+    referenceId: string;
 }
 
 export async function reserve(

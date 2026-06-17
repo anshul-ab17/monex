@@ -1,7 +1,5 @@
 import Decimal from "decimal.js";
-import type {
-  LedgerEntry,
-} from "../types/ledger-entry";
+import type { LedgerEntry } from "../types/ledger-entry";
 
 import { EntryType } from "../constants/entry-types";
 

@@ -1,11 +1,8 @@
 export interface TransferInput {
-  fromAccountId: string;
-
-  toAccountId: string;
-
-  amount: string;
-
-  referenceId: string;
+    fromAccountId: string;
+    toAccountId: string;
+    amount: string;
+    referenceId: string;
 }
 
 export async function transfer(
