@@ -15,15 +15,18 @@ enum LedgerReferenceType {
 
 model LedgerEntry {
   id            String   @id @default(uuid())
-
+  
+  journalId     String
   accountId     String
   amount        Decimal @db.Decimal(30,10)
   referenceType LedgerReferenceType
   referenceId   String
 
+
   description   String?
   createdAt     DateTime @default(now())
-  account LedgerAccount @relation(fields: [accountId], references: [id])
+  account       LedgerAccount @relation(fields: [accountId], references: [id])
+  journal       LedgerJournal @relation(fields: [journalId], references: [id])
 
   @@index([accountId])
   @@index([referenceType, referenceId])
@@ -33,19 +36,25 @@ model LedgerEntry {
 
 model LedgerAccount {
   id        String   @id @default(uuid())
-
   userId    String?
   assetId   String
   type      LedgerAccountType
 
   createdAt DateTime @default(now())
-
   user    User?  @relation(fields: [userId], references: [id])
   asset   Asset  @relation(fields: [assetId], references: [id])
-
   entries LedgerEntry[]
 
   @@index([userId])
   @@index([assetId])
   @@index([type])
+}
+
+model LedgerJournal {
+  id String @id @default(uuid())
+  referenceType LedgerReferenceType
+  referenceId String
+  description String?
+  createdAt DateTime @default(now())
+  entries LedgerEntry[]
 }
