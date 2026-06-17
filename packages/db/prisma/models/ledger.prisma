@@ -19,17 +19,13 @@ model LedgerEntry {
   journalId     String
   accountId     String
   amount        Decimal @db.Decimal(30,10)
-  referenceType LedgerReferenceType
-  referenceId   String
-
-
   description   String?
   createdAt     DateTime @default(now())
   account       LedgerAccount @relation(fields: [accountId], references: [id])
   journal       LedgerJournal @relation(fields: [journalId], references: [id])
 
   @@index([accountId])
-  @@index([referenceType, referenceId])
+  @@index([journalId])
 }
 
 
@@ -57,4 +53,6 @@ model LedgerJournal {
   description String?
   createdAt DateTime @default(now())
   entries LedgerEntry[]
+
+  @@index([referenceType, referenceId])
 }
