@@ -1,20 +1,19 @@
-import {
-  ParsedTransactionWithMeta,
-} from "@solana/web3.js";
+import type { ParsedTransactionWithMeta }
+  from "@solana/web3.js";
 
-import type {
-  TransferInfo,
-} from "../types/transfer";
+import type { TransferInfo }
+  from "../types/transfer";
 
 export function parseTokenTransfer(
   tx: ParsedTransactionWithMeta,
 ): TransferInfo | null {
-  const instructions =
-    tx.transaction.message.instructions;
-
-  for (const instruction of instructions) {
+  for (
+    const instruction
+    of tx.transaction.message.instructions
+  ) {
     if (
-      instruction.program !== "spl-token"
+      instruction.program !==
+      "spl-token"
     ) {
       continue;
     }
@@ -26,24 +25,26 @@ export function parseTokenTransfer(
 
     if (
       !parsed ||
-      parsed.type !== "transferChecked"
+      parsed.type !==
+        "transferChecked"
     ) {
       continue;
     }
 
-    const info = parsed.info;
-
     return {
-      sender: info.source,
+      sender:
+        parsed.info.source,
 
-      recipient: info.destination,
+      recipient:
+        parsed.info.destination,
 
-      amount: info.tokenAmount.amount,
+      amount:
+        parsed.info.tokenAmount.amount,
 
-      assetId: info.mint,
+      assetId:
+        parsed.info.mint,
 
-      signature:
-        tx.transaction.signatures[0],
+      signature:tx.transaction.signatures[0],
 
       slot: tx.slot,
     };

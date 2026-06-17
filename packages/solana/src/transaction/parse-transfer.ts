@@ -1,14 +1,16 @@
-import { ParsedTransactionWithMeta,} from "@solana/web3.js";
+import { ParsedTransactionWithMeta }
+  from "@solana/web3.js";
 
-import type { TransferInfo } from "../types/transfer";
+import type { TransferInfo }
+  from "../types/transfer";
 
 export function parseTransfer(
   tx: ParsedTransactionWithMeta,
 ): TransferInfo | null {
-  const instructions =
-    tx.transaction.message.instructions;
-
-  for (const instruction of instructions) {
+  for (
+    const instruction
+    of tx.transaction.message.instructions
+  ) {
     if (
       instruction.program !== "system"
     ) {
@@ -27,14 +29,15 @@ export function parseTransfer(
       continue;
     }
 
-    const info = parsed.info;
-
     return {
-      sender: info.source,
+      sender:
+        parsed.info.source,
 
-      recipient: info.destination,
+      recipient:
+        parsed.info.destination,
 
-      amount: info.lamports.toString(),
+      amount:
+        parsed.info.lamports.toString(),
 
       assetId: "SOL",
 

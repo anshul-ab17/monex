@@ -7,12 +7,12 @@ export async function getTokenBalance(
     wallet: string,
     mint : string,
 ) {
-    const ata = await getAssociatedTokenAddress(
+    const tokenAccount = await getAssociatedTokenAddress(
         new PublicKey(mint),
         new PublicKey(wallet)
     );
 
     return connection.getTokenAccountBalance(
-        ata,
+        tokenAccount,
     )
 }
