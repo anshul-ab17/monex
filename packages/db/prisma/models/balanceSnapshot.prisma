@@ -1,0 +1,10 @@
+model BalanceSnapshot {
+    id        String @id @default(cuid())
+    userId    String
+    assetId   String
+    available Decimal @db.Decimal(30,10)
+    locked    Decimal @db.Decimal(30,10)
+    createdAt DateTime @default(now())
+
+    @@index([userId, assetId])
+}
