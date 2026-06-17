@@ -1,9 +1,8 @@
 model EventStore {
   id String @id @default(uuid())
-
   subject String
+  eventType String
+  version Int @default(1)
   payload Json
   createdAt DateTime @default(now())
-
-  @@index([subject])
 }
