@@ -4,9 +4,6 @@ model Trade {
   buyerId     String
   sellerId    String
 
-  makerOrderId  String
-  takerOrderId  String
-
   buyOrderId  String
   sellOrderId String
   
