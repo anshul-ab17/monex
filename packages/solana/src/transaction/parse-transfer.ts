@@ -1,52 +1,53 @@
-import { ParsedTransactionWithMeta }
-  from "@solana/web3.js";
-
-import type { TransferInfo }
-  from "../types/transfer";
+import type { ParsedTransactionWithMeta } from "@solana/web3.js";
+import type { TransferInfo } from "../types/transfer";
 
 export function parseTransfer(
-  tx: ParsedTransactionWithMeta,
+    tx: ParsedTransactionWithMeta,
 ): TransferInfo | null {
-  for (
-    const instruction
-    of tx.transaction.message.instructions
-  ) {
-    if (
-      instruction.program !== "system"
-    ) {
-      continue;
+    const signature =
+        tx.transaction.signatures[0];
+
+    if (!signature) {
+        return null;
     }
 
-    const parsed =
-      "parsed" in instruction
-        ? instruction.parsed
-        : null;
+    for (const instruction of tx.transaction.message.instructions) {
+        if (!("parsed" in instruction)) {
+            continue;
+        }
 
-    if (
-      !parsed ||
-      parsed.type !== "transfer"
-    ) {
-      continue;
+        if (
+            instruction.program !== "system"
+        ) {
+            continue;
+        }
+
+        const parsed = instruction.parsed;
+
+        if (
+            parsed.type !== "transfer"
+        ) {
+            continue;
+        }
+
+        const info = parsed.info;
+
+        if (
+            !info.source ||
+            !info.destination
+        ) {
+            continue;
+        }
+
+        return {
+            sender: info.source,
+            recipient: info.destination,
+            amount: info.lamports.toString(),
+            assetId: "SOL",
+            signature,
+            slot: tx.slot,
+        };
     }
 
-    return {
-      sender:
-        parsed.info.source,
-
-      recipient:
-        parsed.info.destination,
-
-      amount:
-        parsed.info.lamports.toString(),
-
-      assetId: "SOL",
-
-      signature:
-        tx.transaction.signatures[0],
-
-      slot: tx.slot,
-    };
-  }
-
-  return null;
+    return null;
 }

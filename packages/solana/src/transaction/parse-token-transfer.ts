@@ -1,54 +1,54 @@
-import type { ParsedTransactionWithMeta }
-  from "@solana/web3.js";
-
-import type { TransferInfo }
-  from "../types/transfer";
+import type { ParsedTransactionWithMeta } from "@solana/web3.js";
+import type { TransferInfo } from "../types/transfer";
 
 export function parseTokenTransfer(
-  tx: ParsedTransactionWithMeta,
+    tx: ParsedTransactionWithMeta,
 ): TransferInfo | null {
-  for (
-    const instruction
-    of tx.transaction.message.instructions
-  ) {
-    if (
-      instruction.program !==
-      "spl-token"
-    ) {
-      continue;
+    const signature =
+        tx.transaction.signatures[0];
+
+    if (!signature) {
+        return null;
     }
 
-    const parsed =
-      "parsed" in instruction
-        ? instruction.parsed
-        : null;
+    for (const instruction of tx.transaction.message.instructions) {
+        if (!("parsed" in instruction)) {
+            continue;
+        }
 
-    if (
-      !parsed ||
-      parsed.type !==
-        "transferChecked"
-    ) {
-      continue;
+        if (
+            instruction.program !=="spl-token"
+        ) {
+            continue;
+        }
+
+        const parsed =  instruction.parsed;
+
+        if (
+            parsed.type !==  "transferChecked"
+        ) {
+            continue;
+        }
+
+        const info = parsed.info;
+
+        if (
+            !info.source ||
+            !info.destination ||
+            !info.mint
+        ) {
+            continue;
+        }
+
+        return {
+            sender: info.source,
+            recipient:info.destination,
+            amount:info.tokenAmount.amount,
+            assetId:info.mint,
+            signature,
+            slot: tx.slot,
+        };
     }
 
-    return {
-      sender:
-        parsed.info.source,
-
-      recipient:
-        parsed.info.destination,
-
-      amount:
-        parsed.info.tokenAmount.amount,
-
-      assetId:
-        parsed.info.mint,
-
-      signature:tx.transaction.signatures[0],
-
-      slot: tx.slot,
-    };
-  }
-
-  return null;
+    return null;
 }
