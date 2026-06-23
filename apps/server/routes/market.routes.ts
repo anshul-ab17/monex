@@ -9,7 +9,7 @@ export async function marketRoutes(
     };
   });
 
-  app.get("/markets/:id", async () => {
+  app.get("/markets/:symbol", async () => {
     return {
       message: "Single market",
     };
@@ -21,7 +21,7 @@ export async function marketRoutes(
     };
   });
 
-  app.patch("/markets/:id", async () => {
+  app.patch("/markets/:symbol", async () => {
     return {
       message: "Update market",
     };

@@ -8,6 +8,11 @@ export async function walletRoutes(
       message: "Get wallets",
     };
   });
+  app.get("/wallet/balances", async () => {
+    return {
+      message: "User balances",
+      };
+  });
 
   app.post("/wallet", async () => {
     return {

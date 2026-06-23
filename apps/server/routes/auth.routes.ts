@@ -3,7 +3,7 @@ import type {FastifyInstance } from "fastify";
 export async function authRoutes(
   app: FastifyInstance
 ) {
-  app.get("/auth/nonce", async () => {
+  app.post("/auth/nonce", async () => {
     return {
       message: "Generate nonce",
     };

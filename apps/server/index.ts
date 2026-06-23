@@ -1,28 +1,21 @@
-import fastify from "fastify";
-import cors from "@fastify/cors";
 import { env } from "@repo/config";
-import routes from "./routes";
 
-const app = fastify({
-  logger: true
-});
+import { createHttpServer } from "./app";
 
-await app.register(cors, {
-  origin: env.FRONTEND_URL,
-  credentials:true
-});
+async function startServer() {
+    try {
+        const app = await createHttpServer();
 
+        await app.listen({
+            port: Number(env.PORT) || 3000,
+            host: "0.0.0.0",
+        });
 
-app.get("/health", async(_request, _reply) =>({
-    status: "ok"
-}));
+        app.log.info(`Server running on port ${env.PORT}`);
+    } catch (error) {
+        console.error(error);
+        process.exit(1);
+    }
+}
 
-await app.register(routes, {
-  prefix: "/api/v1",
-});
-
-app.listen({
-  port:Number(env.PORT) || 3000,
-  host: "0.0.0.0"
-});
-console.log(`server is running on :${env.PORT}`);
+startServer();
