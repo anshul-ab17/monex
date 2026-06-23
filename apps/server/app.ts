@@ -1,7 +1,10 @@
 import fastify from "fastify";
 import cors from "@fastify/cors";
 import { env } from "@repo/config";
-import routes from "./routes";
+import redisPlugin from "./src/plugins/redis";
+import routes from "./src/routes";
+import prismaPlugin from "./src/plugins/prisma";
+
 
 export async function createHttpServer() {
     const app = fastify({
@@ -12,6 +15,16 @@ export async function createHttpServer() {
         origin: env.FRONTEND_URL,
         credentials: true,
     });
+
+    //temp test
+    app.get("/db-test", async(request)=> {
+        const users = await request.server.prisma.user.findMany();
+        return users;
+    })
+
+
+    await app.register(redisPlugin);
+    await app.register(prismaPlugin);
 
     app.get("/health", async () => ({
         status: "ok",
