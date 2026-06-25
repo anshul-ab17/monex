@@ -1,36 +1,36 @@
-import { kafka } from "./client";
-import type { Producer } from "kafkajs";
 import type { BaseEvent } from "@repo/events";
+import type { Producer } from "kafkajs";
 
-class KafkaProducer {
-  private producer: Producer;
+import { kafka } from "./client";
 
-  constructor() {
-    this.producer = kafka.producer();
-  }
+export class KafkaProducer {
+    private readonly producer: Producer;
+    constructor() {
+        this.producer = kafka.producer();
+    }
 
-  async connect() {
-    await this.producer.connect();
-  }
+    async connect(): Promise<void> {
+        await this.producer.connect();
+    }
 
-  async disconnect() {
-    await this.producer.disconnect();
-  }
+    async disconnect(): Promise<void> {
+        await this.producer.disconnect();
+    }
 
-  async publish<TPayload>(
-    topic: string,
-    event: BaseEvent<TPayload>,
-  ) {
-    await this.producer.send({
-      topic,
-      messages: [
-        {
-          key: event.eventId,
-          value: JSON.stringify(event),
-        },
-      ],
-    });
-  }
+    async publish<TPayload>(
+        topic: string,
+        event: BaseEvent<TPayload>,
+    ): Promise<void> {
+        await this.producer.send({
+            topic,
+            messages: [
+                {
+                    key: event.eventId,
+                    value: JSON.stringify(event),
+                },
+            ],
+        });
+    }
 }
 
 export const kafkaProducer = new KafkaProducer();

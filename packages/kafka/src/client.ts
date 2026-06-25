@@ -1,6 +1,7 @@
-import {Kafka} from "kafkajs";
+import { Kafka } from "kafkajs";
+import { env } from "@repo/config";
 
 export const kafka = new Kafka({
     clientId: "monex",
-    brokers: process.env.KAFKA_BROKERS!.split(",")
-})
+    brokers: [env.KAFKA_BROKER],
+});
