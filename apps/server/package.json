@@ -21,6 +21,7 @@
     "@repo/db": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/events": "workspace:*",
+    "@repo/kafka": "workspace:*",
     "@repo/redis": "workspace:*",
     "@repo/types": "workspace:*",
     "@repo/typescript-config": "workspace:*",

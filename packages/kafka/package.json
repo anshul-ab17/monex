@@ -1,5 +1,5 @@
 {
-  "name": "kafka",
+  "name": "@repo/kafka",
   "module": "index.ts",
   "type": "module",
   "private": true,
@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "kafkajs": "^2.2.4",
-    "@repo/events": "workspace:*"
+    "@repo/events": "workspace:*",
+    "@repo/config": "workspace:*"
   }
 }

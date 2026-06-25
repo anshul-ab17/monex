@@ -1,9 +1,12 @@
 import fastify from "fastify";
 import cors from "@fastify/cors";
+import routes from "./src/routes";
+import test from "./src/test";
 import { env } from "@repo/config";
 import redisPlugin from "./src/plugins/redis";
-import routes from "./src/routes";
 import prismaPlugin from "./src/plugins/prisma";
+import kafkaPlugin from "./src/plugins/kafka";
+import jwtPlugin from "./src/plugins/jwt";
 
 
 export async function createHttpServer() {
@@ -16,15 +19,11 @@ export async function createHttpServer() {
         credentials: true,
     });
 
-    //temp test
-    app.get("/db-test", async(request)=> {
-        const users = await request.server.prisma.user.findMany();
-        return users;
-    })
-
 
     await app.register(redisPlugin);
     await app.register(prismaPlugin);
+    await app.register(kafkaPlugin);
+    await app.register(jwtPlugin);
 
     app.get("/health", async () => ({
         status: "ok",
@@ -33,6 +32,10 @@ export async function createHttpServer() {
     await app.register(routes, {
         prefix: "/api/v1",
     });
+
+    await app.register(test, {
+        prefix:"temp/test/"
+    })
 
     return app;
 }
