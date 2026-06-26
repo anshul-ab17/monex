@@ -31,3 +31,6 @@ class Env {
 		return this.instance;
 	}
 }
+
+export const env = Env.get();
+ 
