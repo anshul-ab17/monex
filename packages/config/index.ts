@@ -13,7 +13,7 @@ class Env {
 				SOLANA_RPC_URL: z.string().default("https://api.devnet.solana.com"),
 				SOLANA_MASTER_SECRET: z.string().optional(),
 				USDC_MINT: z.string().default("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"),
-				USDT_MINT: z.string().optional(),
+				USDT_MINT: z.string().default("Ejmc6tyoj6rJ3N6qWfD1WjV22V1P3moxGZ5Z85F94G1q"),
 				KAFKA_BROKER: z.string().default("localhost:9092"),
 				USE_KAFKA: z.coerce.boolean().default(true),
 				NODE_ENV: z.enum([
@@ -31,6 +31,3 @@ class Env {
 		return this.instance;
 	}
 }
-
-export const env = Env.get();
- 
