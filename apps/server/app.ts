@@ -5,7 +5,7 @@ import test from "./src/test";
 import { env } from "@repo/config";
 import redisPlugin from "./src/plugins/redis";
 import prismaPlugin from "./src/plugins/prisma";
-import kafkaPlugin from "./src/plugins/kafka";
+import KafkaPlugin from "./src/plugins/kafka";
 import jwtPlugin from "./src/plugins/jwt";
 
 
@@ -22,7 +22,7 @@ export async function createHttpServer() {
 
     await app.register(redisPlugin);
     await app.register(prismaPlugin);
-    await app.register(kafkaPlugin);
+    await app.register(KafkaPlugin);
     await app.register(jwtPlugin);
 
     app.get("/health", async () => ({
