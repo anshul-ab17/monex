@@ -5,6 +5,3 @@ packages:
 peerDependencyRules:
   allowedVersions:
     utf-8-validate: "6"
-
-patchedDependencies:
-  kafkajs@2.2.4: patches/kafkajs@2.2.4.patch

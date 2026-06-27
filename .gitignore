@@ -4,8 +4,9 @@
 node_modules
 .pnp
 .pnp.js
+bun.lock
 
-
+.pnpm-patch-tmp
 
 # Local env files
 .env
@@ -42,3 +43,4 @@ yarn-error.log*
 *.pem
 memory
 .claude
+docs
