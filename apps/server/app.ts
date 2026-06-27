@@ -7,6 +7,7 @@ import redisPlugin from "./src/plugins/redis";
 import prismaPlugin from "./src/plugins/prisma";
 import KafkaPlugin from "./src/plugins/kafka";
 import jwtPlugin from "./src/plugins/jwt";
+import { startConsumers } from "./src/consumers";
 
 
 export async function createHttpServer() {
@@ -18,7 +19,6 @@ export async function createHttpServer() {
         origin: env.FRONTEND_URL,
         credentials: true,
     });
-
 
     await app.register(redisPlugin);
     await app.register(prismaPlugin);
@@ -35,7 +35,11 @@ export async function createHttpServer() {
 
     await app.register(test, {
         prefix:"temp/test/"
-    })
+    });
+
+    app.addHook("onReady", async () => {
+        await startConsumers();
+    });
 
     return app;
 }
