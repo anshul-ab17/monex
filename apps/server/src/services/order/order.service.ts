@@ -76,6 +76,13 @@ export const orderService = {
                     available: { increment: releaseAmt.toString() },
                 },
             });
+            await tx.orderEvent.create({
+                data: {
+                    orderId: order.id,
+                    eventType: "CANCELLED",
+                    remainingQty: order.remainingQty.toString(),
+                },
+            });
         });
 
         return order;

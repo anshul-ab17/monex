@@ -6,7 +6,7 @@ import { findOrderById, setOrderStatus } from "../services/order/order.repositor
 
 interface OrderEngineEvent {
     eventType: string;
-    payload: { orderId: string };
+    payload: { orderId: string; remainingQty?: string };
 }
 
 export async function startOrderConsumer() {
@@ -14,11 +14,14 @@ export async function startOrderConsumer() {
         "monex-order-consumer",
         KafkaTopics.ORDERS,
         async (event) => {
-            const { orderId } = event.payload;
+            const { orderId, remainingQty } = event.payload;
 
             if (event.eventType === OrderEventType.ACCEPTED) {
                 await db.$transaction(async (tx) => {
                     await setOrderStatus(tx, orderId, "OPEN");
+                    await tx.orderEvent.create({
+                        data: { orderId, eventType: "PLACED" },
+                    });
                 });
                 return;
             }
@@ -44,7 +47,61 @@ export async function startOrderConsumer() {
                             available: { increment: releaseAmt.toString() },
                         },
                     });
+                    await tx.orderEvent.create({
+                        data: {
+                            orderId,
+                            eventType: "REJECTED",
+                            remainingQty: order.remainingQty.toString(),
+                        },
+                    });
                 });
+                return;
+            }
+
+            if (event.eventType === OrderEventType.PARTIALLY_FILLED) {
+                const order = await findOrderById(orderId);
+                if (!order) return;
+                const filled = new Decimal(order.quantity.toString()).sub(
+                    new Decimal(remainingQty ?? order.remainingQty.toString()),
+                );
+                await db.orderEvent.create({
+                    data: {
+                        orderId,
+                        eventType: "PARTIALLY_FILLED",
+                        filledQty: filled.toString(),
+                        remainingQty: remainingQty ?? order.remainingQty.toString(),
+                        price: order.price?.toString(),
+                    },
+                });
+                return;
+            }
+
+            if (event.eventType === OrderEventType.FILLED) {
+                const order = await findOrderById(orderId);
+                if (!order) return;
+                await db.orderEvent.create({
+                    data: {
+                        orderId,
+                        eventType: "FILLED",
+                        filledQty: order.quantity.toString(),
+                        remainingQty: "0",
+                        price: order.price?.toString(),
+                    },
+                });
+                return;
+            }
+
+            if (event.eventType === OrderEventType.CANCELLED) {
+                const order = await findOrderById(orderId);
+                if (!order) return;
+                await db.orderEvent.create({
+                    data: {
+                        orderId,
+                        eventType: "CANCELLED",
+                        remainingQty: order.remainingQty.toString(),
+                    },
+                });
+                return;
             }
         },
     );
