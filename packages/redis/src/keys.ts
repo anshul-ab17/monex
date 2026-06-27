@@ -1,7 +1,7 @@
 export const RedisKeys = {
     nonce: (wallet: string) => `nonce:${wallet}`,
-    session: (userId: string) => `nonce:${userId}`,
+    session: (userId: string) => `session:${userId}`,
 
-    market: (marketId: string) => `nonce:${marketId}`,
-    orderbook: (marketId: string) => `nonce:${marketId}`
+    market: (marketId: string) => `market:${marketId}`,
+    orderbook: (marketId: string) => `orderbook:${marketId}`,
 };
