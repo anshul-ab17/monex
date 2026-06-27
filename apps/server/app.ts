@@ -9,6 +9,7 @@ import KafkaPlugin from "./src/plugins/kafka";
 import jwtPlugin from "./src/plugins/jwt";
 import { startConsumers } from "./src/consumers";
 import { startCleanupJob } from "./src/jobs/cleanup.job";
+import { startDepositPoller } from "./src/jobs/deposit-poller.job";
 
 
 export async function createHttpServer() {
@@ -41,6 +42,7 @@ export async function createHttpServer() {
     app.addHook("onReady", async () => {
         await startConsumers();
         startCleanupJob();
+        startDepositPoller();
     });
 
     return app;

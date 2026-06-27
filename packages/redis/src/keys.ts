@@ -4,4 +4,6 @@ export const RedisKeys = {
 
     market: (marketId: string) => `market:${marketId}`,
     orderbook: (marketId: string) => `orderbook:${marketId}`,
+
+    depositCursor: () => "deposit:cursor",
 };
