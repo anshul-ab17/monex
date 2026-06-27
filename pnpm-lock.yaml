@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  kafkajs@2.2.4:
+    hash: wrelyp24fubhjdmebty7sp2kuu
+    path: patches/kafkajs@2.2.4.patch
+
 importers:
 
   .:
@@ -253,7 +258,7 @@ importers:
         version: link:../events
       kafkajs:
         specifier: ^2.2.4
-        version: 2.2.4
+        version: 2.2.4(patch_hash=wrelyp24fubhjdmebty7sp2kuu)
       typescript:
         specifier: ^5
         version: 5.9.2
@@ -4390,7 +4395,7 @@ snapshots:
       object.assign: 4.1.7
       object.values: 1.2.1
 
-  kafkajs@2.2.4: {}
+  kafkajs@2.2.4(patch_hash=wrelyp24fubhjdmebty7sp2kuu): {}
 
   keyv@4.5.4:
     dependencies:

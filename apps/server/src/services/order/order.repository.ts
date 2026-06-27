@@ -1,4 +1,5 @@
 import db from "@repo/db";
+import type { OrderSide, OrderStatus, OrderType, TimeInForce } from "@repo/db";
 
 type Tx = Parameters<Parameters<(typeof db)["$transaction"]>[0]>[0];
 
@@ -8,14 +9,14 @@ export async function insertOrder(
         userId: string;
         marketId: string;
         clientOrderId?: string;
-        side: string;
-        type: string;
-        status: string;
+        side: OrderSide;
+        type: OrderType;
+        status: OrderStatus;
         sequenceNumber: bigint;
         price?: string;
         quantity: string;
         remainingQty: string;
-        timeInForce: string;
+        timeInForce: TimeInForce;
         postOnly: boolean;
         reduceOnly: boolean;
     },
@@ -47,7 +48,7 @@ export async function findOrdersByUser(userId: string, page: number, limit: numb
 export async function setOrderStatus(
     tx: Tx,
     orderId: string,
-    status: string,
+    status: OrderStatus,
     extra: { cancelledAt?: Date } = {},
 ) {
     return tx.order.update({ where: { id: orderId }, data: { status, ...extra } });
