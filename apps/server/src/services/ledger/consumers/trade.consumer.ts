@@ -4,6 +4,7 @@ import { kafkaConsumer, KafkaTopics } from "@repo/kafka";
 import { TradeEventType } from "@repo/events";
 import type { TradeExecutedEvent } from "@repo/events";
 import { ledgerService } from "../ledger.service";
+import { candleService } from "../../market/candle.service";
 
 export async function startTradeConsumer() {
     await kafkaConsumer.subscribe<TradeExecutedEvent>(
@@ -20,16 +21,21 @@ export async function startTradeConsumer() {
             });
             if (!trade) return;
 
+            const priceD = new Decimal(price);
+            const qtyD = new Decimal(quantity);
+
             await ledgerService.settleTrade({
                 tradeId,
                 buyerId,
                 sellerId,
                 baseAssetId: trade.market.baseAssetId,
                 quoteAssetId: trade.market.quoteAssetId,
-                quantity: new Decimal(quantity),
-                price: new Decimal(price),
+                quantity: qtyD,
+                price: priceD,
                 fee: new Decimal(trade.fee.toString()),
             });
+
+            await candleService.updateFromTrade(trade.marketId, priceD, qtyD, trade.createdAt);
         },
     );
 }
