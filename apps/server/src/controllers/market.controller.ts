@@ -1,6 +1,7 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
 import { marketService } from "../services/market/market.service";
 import { candleService } from "../services/market/candle.service";
+import { depthService } from "../services/market/depth.service";
 import { ok, fail } from "../utils/response";
 import type { CandleInterval } from "@repo/db";
 
@@ -16,6 +17,13 @@ export const marketController = {
         const { id } = request.params as { id: string };
         const market = await marketService.getById(id);
         return reply.send(ok(market));
+    },
+
+    async getDepth(request: FastifyRequest, reply: FastifyReply) {
+        const { id } = request.params as { id: string };
+        const { levels = "20" } = request.query as { levels?: string };
+        const depth = await depthService.getDepth(id, parseInt(levels));
+        return reply.send(ok(depth));
     },
 
     async getCandles(request: FastifyRequest, reply: FastifyReply) {

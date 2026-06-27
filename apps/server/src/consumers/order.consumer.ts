@@ -3,10 +3,21 @@ import db from "@repo/db";
 import { kafkaConsumer, KafkaTopics } from "@repo/kafka";
 import { OrderEventType } from "@repo/events";
 import { findOrderById, setOrderStatus } from "../services/order/order.repository";
+import { depthService } from "../services/market/depth.service";
+import { wsBroadcaster } from "../ws/ws.broadcaster";
 
 interface OrderEngineEvent {
     eventType: string;
-    payload: { orderId: string; remainingQty?: string };
+    payload: { orderId: string; userId?: string; marketId?: string; remainingQty?: string };
+}
+
+async function broadcastDepth(marketId: string) {
+    try {
+        const depth = await depthService.getDepth(marketId);
+        wsBroadcaster.broadcast(`market:depth:${marketId}`, "depth", depth);
+    } catch {
+        // non-critical; don't crash consumer on WS error
+    }
 }
 
 export async function startOrderConsumer() {
@@ -14,7 +25,7 @@ export async function startOrderConsumer() {
         "monex-order-consumer",
         KafkaTopics.ORDERS,
         async (event) => {
-            const { orderId, remainingQty } = event.payload;
+            const { orderId, marketId, remainingQty } = event.payload;
 
             if (event.eventType === OrderEventType.ACCEPTED) {
                 await db.$transaction(async (tx) => {
@@ -23,6 +34,7 @@ export async function startOrderConsumer() {
                         data: { orderId, eventType: "PLACED" },
                     });
                 });
+                if (marketId) await broadcastDepth(marketId);
                 return;
             }
 
@@ -55,6 +67,7 @@ export async function startOrderConsumer() {
                         },
                     });
                 });
+                await broadcastDepth(order.marketId);
                 return;
             }
 
@@ -73,6 +86,7 @@ export async function startOrderConsumer() {
                         price: order.price?.toString(),
                     },
                 });
+                await broadcastDepth(order.marketId);
                 return;
             }
 
@@ -88,6 +102,7 @@ export async function startOrderConsumer() {
                         price: order.price?.toString(),
                     },
                 });
+                await broadcastDepth(order.marketId);
                 return;
             }
 
@@ -101,6 +116,7 @@ export async function startOrderConsumer() {
                         remainingQty: order.remainingQty.toString(),
                     },
                 });
+                await broadcastDepth(order.marketId);
                 return;
             }
         },

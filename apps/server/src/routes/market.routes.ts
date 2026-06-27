@@ -21,4 +21,5 @@ export async function marketRoutes(app: FastifyInstance) {
     app.get("/markets", wrap(marketController.list, app));
     app.get("/markets/:id", wrap(marketController.getById, app));
     app.get("/markets/:id/candles", wrap(marketController.getCandles, app));
+    app.get("/markets/:id/depth", wrap(marketController.getDepth, app));
 }

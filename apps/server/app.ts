@@ -1,5 +1,6 @@
 import fastify from "fastify";
 import cors from "@fastify/cors";
+import wsPlugin from "@fastify/websocket";
 import routes from "./src/routes";
 import test from "./src/test";
 import { env } from "@repo/config";
@@ -10,6 +11,7 @@ import jwtPlugin from "./src/plugins/jwt";
 import { startConsumers } from "./src/consumers";
 import { startCleanupJob } from "./src/jobs/cleanup.job";
 import { startDepositPoller } from "./src/jobs/deposit-poller.job";
+import { wsRoutes } from "./src/ws/ws.routes";
 
 
 export async function createHttpServer() {
@@ -26,6 +28,7 @@ export async function createHttpServer() {
     await app.register(prismaPlugin);
     await app.register(KafkaPlugin);
     await app.register(jwtPlugin);
+    await app.register(wsPlugin);
 
     app.get("/health", async () => ({
         status: "ok",
@@ -34,6 +37,8 @@ export async function createHttpServer() {
     await app.register(routes, {
         prefix: "/api/v1",
     });
+
+    await app.register(wsRoutes, { prefix: "/api/v1" });
 
     await app.register(test, {
         prefix:"temp/test/"
