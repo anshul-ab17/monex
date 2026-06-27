@@ -2,6 +2,7 @@
 
 import { use } from "react";
 import { TickerBar } from "@/components/trade/ticker-bar";
+import { TradingChart } from "@/components/trade/trading-chart";
 import { OrderBook } from "@/components/trade/orderbook";
 import { OrderForm } from "@/components/trade/order-form";
 import { RecentTrades } from "@/components/trade/recent-trades";
@@ -22,10 +23,8 @@ export default function TradePage({
       </div>
 
       {/* Chart */}
-      <div className="bg-surface p-2">
-        <div className="flex h-full items-center justify-center text-text-muted text-sm">
-          TradingView Chart — Task 5
-        </div>
+      <div className="bg-surface">
+        <TradingChart marketId={marketId} />
       </div>
 
       {/* OrderBook */}
