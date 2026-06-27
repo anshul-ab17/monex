@@ -10,7 +10,7 @@ class Env {
 				REDIS_URL: z.url(),
 				PORT: z.coerce.number().default(3000),
 				FRONTEND_URL: z.string().default("http://localhost:3001"),
-				SOLANA_RPC_URL: z.string().default("https://api.devnet.solana.com"),
+				SOLANA_RPC_URL: z.string().url().catch("https://api.devnet.solana.com"),
 				SOLANA_MASTER_SECRET: z.string().optional(),
 				USDC_MINT: z.string().default("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"),
 				USDT_MINT: z.string().default("Ejmc6tyoj6rJ3N6qWfD1WjV22V1P3moxGZ5Z85F94G1q"),
