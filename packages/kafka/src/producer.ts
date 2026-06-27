@@ -1,12 +1,12 @@
 import type { BaseEvent } from "@repo/events";
-import type { Producer } from "kafkajs";
+import { Partitioners, type Producer } from "kafkajs";
 
 import { kafka } from "./client";
 
 export class KafkaProducer {
     private readonly producer: Producer;
     constructor() {
-        this.producer = kafka.producer();
+        this.producer = kafka.producer({ createPartitioner: Partitioners.LegacyPartitioner });
     }
 
     async connect(): Promise<void> {
