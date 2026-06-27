@@ -186,22 +186,26 @@ class OrderBookSide {
     }
 
     bestPrice(): Decimal | null {
-        // Clean stale empty levels at the extremal position
-        if (this.side === "BUY") {
-            let entry = this.priceTree.maxEntry();
-            while (entry && entry.value.isEmpty()) {
-                this.cleanupLevel(entry.value);
-                entry = this.priceTree.maxEntry();
-            }
-            return entry ? entry.value.head!.decimalPrice : null;
-        } else {
-            let entry = this.priceTree.minEntry();
-            while (entry && entry.value.isEmpty()) {
-                this.cleanupLevel(entry.value);
-                entry = this.priceTree.minEntry();
-            }
-            return entry ? entry.value.head!.decimalPrice : null;
+        const level = this.cleanBestLevel();
+        return level?.head?.decimalPrice ?? null;
+    }
+
+    // ponytail: re-traverses from root each iteration (height ~3-4, amortized O(1)); cached bestLevel when perf matters
+    private cleanBestLevel(): PriceLevel | null {
+        let entry =
+            this.side === "BUY"
+                ? this.priceTree.maxEntry()
+                : this.priceTree.minEntry();
+
+        while (entry && entry.value.isEmpty()) {
+            this.cleanupLevel(entry.value);
+            entry =
+                this.side === "BUY"
+                    ? this.priceTree.maxEntry()
+                    : this.priceTree.minEntry();
         }
+
+        return entry?.value ?? null;
     }
 
     getOrder(orderId: string): OrderNode | undefined {
