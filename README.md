@@ -1,159 +1,104 @@
-# Turborepo starter
+# Monex
 
-This Turborepo starter is maintained by the Turborepo core team.
+Monex is a production-grade dex: prediction market and exchange infrastructure built with TypeScript, designed for scalability, reliability, and financial correctness.
 
-## Using this example
+Built on an event-driven architecture, Monex leverages Fastify, PostgreSQL, Redis, Redpanda (Kafka), and Solana to power high-performance trading and real-time market data.
 
-Run the following command:
+## Features
 
-```sh
-npx create-turbo@latest
+* High-performance order processing
+* Price-time priority matching engine
+* Double-entry accounting ledger
+* Solana wallet authentication
+* Real-time market data via WebSockets
+* Event-driven architecture with Kafka
+* Modular monorepo architecture using Turborepo
+
+## Tech Stack
+
+**Backend:** Fastify, TypeScript, Bun
+**Frontend:** Next.js
+**Database:** PostgreSQL, Prisma ORM
+**Messaging:** Redpanda (Kafka)
+**Cache:** Redis
+**Blockchain:** Solana
+**Infrastructure:** Docker, Docker Compose, Turborepo
+
+## Prerequisites
+
+* Node.js >= 22
+* pnpm >= 10
+* Docker & Docker Compose
+
+## Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/anshul-ab17/monex.git
+
+# Move into the project directory
+cd monex
+
+# Install dependencies
+pnpm install
 ```
 
-## What's inside?
+## Environment Setup
 
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+```bash
+cp .env.example .env
 ```
 
-Without global `turbo`, use your package manager:
+Update the `.env` file with the required configuration values.
 
-```sh
-cd my-turborepo
-npx turbo build
-pnpm dlx turbo build
-pnpm exec turbo build
+## Start Infrastructure
+
+```bash
+docker compose up -d
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+This starts PostgreSQL, Redis, and Redpanda locally.
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+## Run Database Migrations
 
-```sh
-turbo build --filter=docs
+```bash
+pnpm db:migrate
 ```
 
-Without global `turbo`:
+## Start Development
 
-```sh
-npx turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+```bash
+pnpm dev
 ```
 
-### Develop
+## Repository Structure
 
-To develop all apps and packages, run the following command:
+```text
+apps/                  # Deployable applications
+packages/              # Shared libraries and domain modules
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+apps/
+├── server             # Fastify HTTP API server
+├── web                # Next.js frontend application
+├── engine             # Order matching engine
+└── ws-gateway         # Real-time WebSocket gateway
 
-```sh
-cd my-turborepo
-turbo dev
+packages/
+├── db                 # Prisma schema and database client
+├── redis              # Redis client and caching utilities
+├── kafka              # Kafka producer and consumer abstractions
+├── events             # Typed event contracts
+├── ledger             # Double-entry accounting system
+├── solana             # Solana blockchain integration
+├── config             # Environment configuration and validation
+├── types              # Shared TypeScript types
+└── validation         # Zod validation schemas
 ```
 
-Without global `turbo`, use your package manager:
+## Architecture
 
-```sh
-cd my-turborepo
-npx turbo dev
-pnpm exec turbo dev
-pnpm exec turbo dev
-```
+Monex follows an event-driven architecture where PostgreSQL acts as the source of truth, Redis manages ephemeral state and caching, and Redpanda (Kafka) enables asynchronous communication between services.
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## System design
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo dev --filter=web
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-pnpm exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-pnpm exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+![Monex System Design](architecture/monex-architecture.svg)
