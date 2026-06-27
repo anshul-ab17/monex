@@ -1,23 +1,27 @@
-import type {FastifyInstance } from "fastify"; 
+import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
+import { WalletController } from "../controllers/wallet.controller";
+import { AppError } from "../utils/errors";
+import { fail } from "../utils/response";
+import { authenticate } from "../middleware/auth.middleware";
 
-export async function depositRoutes(
-  app: FastifyInstance
-) {
-  app.post("/deposit", async () => {
-    return {
-      message: "Create deposit",
+function wrap(fn: (req: FastifyRequest, reply: FastifyReply) => Promise<unknown>, app: FastifyInstance) {
+    return async (request: FastifyRequest, reply: FastifyReply) => {
+        try {
+            return await fn(request, reply);
+        } catch (err) {
+            if (err instanceof AppError) {
+                return reply.code(err.statusCode).send(fail(err.message, err.code));
+            }
+            app.log.error(err);
+            return reply.code(500).send(fail("Internal server error", "INTERNAL"));
+        }
     };
-  });
+}
 
-  app.get("/deposit", async () => {
-    return {
-      message: "Deposit history",
-    };
-  });
+export async function depositRoutes(app: FastifyInstance) {
+    const ctrl = new WalletController();
 
-  app.get("/deposit/:id", async () => {
-    return {
-      message: "Deposit details",
-    };
-  });
+    app.post("/deposit", { preHandler: [authenticate] }, wrap(ctrl.submitDeposit.bind(ctrl), app));
+    app.get("/deposit", { preHandler: [authenticate] }, wrap(ctrl.getDeposits.bind(ctrl), app));
+    app.get("/deposit/:id", { preHandler: [authenticate] }, wrap(ctrl.getDepositById.bind(ctrl), app));
 }

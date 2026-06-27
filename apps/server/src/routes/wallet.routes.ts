@@ -1,28 +1,26 @@
-import type {FastifyInstance } from "fastify";
+import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
+import { WalletController } from "../controllers/wallet.controller";
+import { AppError } from "../utils/errors";
+import { fail } from "../utils/response";
+import { authenticate } from "../middleware/auth.middleware";
 
-export async function walletRoutes(
-  app: FastifyInstance
-) {
-  app.get("/wallet", async () => {
-    return {
-      message: "Get wallets",
+function wrap(fn: (req: FastifyRequest, reply: FastifyReply) => Promise<unknown>, app: FastifyInstance) {
+    return async (request: FastifyRequest, reply: FastifyReply) => {
+        try {
+            return await fn(request, reply);
+        } catch (err) {
+            if (err instanceof AppError) {
+                return reply.code(err.statusCode).send(fail(err.message, err.code));
+            }
+            app.log.error(err);
+            return reply.code(500).send(fail("Internal server error", "INTERNAL"));
+        }
     };
-  });
-  app.get("/wallet/balances", async () => {
-    return {
-      message: "User balances",
-      };
-  });
+}
 
-  app.post("/wallet", async () => {
-    return {
-      message: "Add wallet",
-    };
-  });
+export async function walletRoutes(app: FastifyInstance) {
+    const ctrl = new WalletController();
 
-  app.delete("/wallet/:id", async () => {
-    return {
-      message: "Delete wallet",
-    };
-  });
+    app.get("/wallet/balances", { preHandler: [authenticate] }, wrap(ctrl.getBalances.bind(ctrl), app));
+    app.get("/wallet/deposit-address", { preHandler: [authenticate] }, wrap(ctrl.getDepositAddress.bind(ctrl), app));
 }
