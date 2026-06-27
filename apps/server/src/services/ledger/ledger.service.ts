@@ -11,7 +11,10 @@ import { createJournal } from "./journal.service";
 type DB = typeof db;
 
 export class LedgerService {
-    constructor(private db: DB = db) {}
+    private db: DB;
+    constructor(injectedDb?: DB) {
+        this.db = injectedDb ?? db;
+    }
 
     async credit(
         userId: string,
