@@ -186,18 +186,21 @@ class OrderBookSide {
     }
 
     bestPrice(): Decimal | null {
+        // Clean stale empty levels at the extremal position
         if (this.side === "BUY") {
-            const entry = this.priceTree.maxEntry();
-            if (!entry) return null;
-            const level = entry.value;
-            if (level.isEmpty()) return null;
-            return level.head!.decimalPrice;
+            let entry = this.priceTree.maxEntry();
+            while (entry && entry.value.isEmpty()) {
+                this.cleanupLevel(entry.value);
+                entry = this.priceTree.maxEntry();
+            }
+            return entry ? entry.value.head!.decimalPrice : null;
         } else {
-            const entry = this.priceTree.minEntry();
-            if (!entry) return null;
-            const level = entry.value;
-            if (level.isEmpty()) return null;
-            return level.head!.decimalPrice;
+            let entry = this.priceTree.minEntry();
+            while (entry && entry.value.isEmpty()) {
+                this.cleanupLevel(entry.value);
+                entry = this.priceTree.minEntry();
+            }
+            return entry ? entry.value.head!.decimalPrice : null;
         }
     }
 
