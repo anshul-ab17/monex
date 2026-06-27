@@ -8,6 +8,7 @@ import prismaPlugin from "./src/plugins/prisma";
 import KafkaPlugin from "./src/plugins/kafka";
 import jwtPlugin from "./src/plugins/jwt";
 import { startConsumers } from "./src/consumers";
+import { startCleanupJob } from "./src/jobs/cleanup.job";
 
 
 export async function createHttpServer() {
@@ -39,6 +40,7 @@ export async function createHttpServer() {
 
     app.addHook("onReady", async () => {
         await startConsumers();
+        startCleanupJob();
     });
 
     return app;
