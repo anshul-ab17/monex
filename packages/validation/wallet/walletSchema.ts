@@ -5,6 +5,7 @@ export class WalletSchema {
     assetId: z.uuid(),
     amount: z.number().positive(),
     destinationAddress: z.string().min(32),
+    signature: z.string().min(1),
   });
 
   public static deposit = z.object({

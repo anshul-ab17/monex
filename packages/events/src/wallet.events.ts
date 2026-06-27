@@ -18,6 +18,7 @@ export interface DepositConfirmedPayload {
 }
 
 export interface WithdrawalRequestedPayload {
+  withdrawalId: string;
   userId: string;
   assetId: string;
   amount: string;
