@@ -1,29 +1,28 @@
-import type {FastifyInstance } from "fastify";
+import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
+import { OrderController } from "../controllers/order.controller";
+import { AppError } from "../utils/errors";
+import { fail } from "../utils/response";
+import { authenticate } from "../middleware/auth.middleware";
 
-export async function orderRoutes(
-  app: FastifyInstance
-) {
-  app.post("/orders", async () => {
-    return {
-      message: "Create order",
+function wrap(fn: (req: FastifyRequest, reply: FastifyReply) => Promise<unknown>, app: FastifyInstance) {
+    return async (request: FastifyRequest, reply: FastifyReply) => {
+        try {
+            return await fn(request, reply);
+        } catch (err) {
+            if (err instanceof AppError) {
+                return reply.code(err.statusCode).send(fail(err.message, err.code));
+            }
+            app.log.error(err);
+            return reply.code(500).send(fail("Internal server error", "INTERNAL"));
+        }
     };
-  });
+}
 
-  app.delete("/orders/:id", async () => {
-    return {
-      message: "Cancel order",
-    };
-  });
+export async function orderRoutes(app: FastifyInstance) {
+    const ctrl = new OrderController();
 
-  app.get("/orders", async () => {
-    return {
-      message: "All orders",
-    };
-  });
-
-  app.get("/orders/:id", async () => {
-    return {
-      message: "Single order",
-    };
-  });
+    app.post("/orders", { preHandler: [authenticate] }, wrap(ctrl.create.bind(ctrl), app));
+    app.get("/orders", { preHandler: [authenticate] }, wrap(ctrl.list.bind(ctrl), app));
+    app.get("/orders/:id", { preHandler: [authenticate] }, wrap(ctrl.getById.bind(ctrl), app));
+    app.delete("/orders/:id", { preHandler: [authenticate] }, wrap(ctrl.cancel.bind(ctrl), app));
 }
