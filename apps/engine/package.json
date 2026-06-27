@@ -4,8 +4,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun --watch --env-file=../server/.env index.ts",
-    "start": "bun --env-file=../server/.env index.ts",
+    "dev": "cd ../.. && bun --watch --env-file apps/server/.env apps/engine/index.ts",
+    "start": "cd ../.. && bun --env-file apps/server/.env apps/engine/index.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
