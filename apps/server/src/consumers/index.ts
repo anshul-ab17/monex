@@ -1,6 +1,7 @@
 import { startAuthConsumer } from "./auth.consumer";
 import { startOrderConsumer } from "./order.consumer";
 import { startWalletConsumer } from "./wallet.consumer";
+import { startWithdrawalConsumer } from "./withdrawal.consumer";
 import { startTradeConsumer } from "../services/ledger/consumers/trade.consumer";
 import { env } from "@repo/config";
 
@@ -9,5 +10,6 @@ export async function startConsumers() {
     await startAuthConsumer();
     await startOrderConsumer();
     await startWalletConsumer();
+    await startWithdrawalConsumer();
     await startTradeConsumer();
 }
