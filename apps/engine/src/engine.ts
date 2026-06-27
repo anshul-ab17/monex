@@ -1,6 +1,6 @@
 import Decimal from "decimal.js";
 import db from "@repo/db";
-import { orderBookStore, type BookOrder } from "./orderbook";
+import { orderBookStore, type BookOrder } from "./orderbook/index";
 import { enginePublisher } from "./publisher";
 import type { OrderCreatedPayload } from "@repo/events";
 

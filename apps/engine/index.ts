@@ -1,5 +1,5 @@
 import { kafkaProducer } from "@repo/kafka";
-import { orderBookStore } from "./src/orderbook";
+import { orderBookStore } from "./src/orderbook/index";
 import { startEngineConsumer } from "./src/consumer";
 
 async function main() {
