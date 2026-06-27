@@ -101,4 +101,4 @@ Monex follows an event-driven architecture where PostgreSQL acts as the source o
 
 ## System design
 
-![Monex System Design](system-design\monex-architecture.svg)
+![Monex System Design](./system-design/monex-architecture.svg)
