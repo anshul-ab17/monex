@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { BarChart3, Wallet, ClipboardList } from "lucide-react";
+import { WalletButton } from "./wallet-button";
 
 const NAV_ITEMS = [
   { href: "/trade", label: "Trade", icon: BarChart3 },
@@ -40,10 +41,7 @@ export function Navbar() {
         })}
       </nav>
       <div className="ml-auto">
-        {/* Wallet connect button — added in Task 6 */}
-        <button className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-hover transition-colors cursor-pointer">
-          Connect Wallet
-        </button>
+        <WalletButton />
       </div>
     </header>
   );
