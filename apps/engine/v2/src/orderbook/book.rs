@@ -20,6 +20,8 @@ pub struct BookOrder {
     pub sequence_number: u64,
     pub time_in_force: String,
     pub post_only: bool,
+    pub stop_price: Option<Decimal>,
+    pub order_type: String,
 }
 
 #[derive(Debug, Clone)]

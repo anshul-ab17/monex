@@ -14,7 +14,11 @@ export const orderService = {
 
         const market = await marketService.assertActive(input.marketId);
         const quantity = new Decimal(input.quantity);
-        const price = new Decimal(input.price!);
+
+        const isStop = input.type === "STOP_LIMIT" || input.type === "STOP_MARKET";
+        const price = input.type === "STOP_MARKET"
+            ? (input.stopPrice ? new Decimal(input.stopPrice) : new Decimal(0))
+            : new Decimal(input.price!);
 
         const assetId = input.side === "BUY" ? market.quoteAssetId : market.baseAssetId;
         const reserveAmt = input.side === "BUY" ? price.mul(quantity) : quantity;
@@ -49,9 +53,10 @@ export const orderService = {
                 marketId: input.marketId,
                 side: input.side,
                 type: input.type,
-                status: "PENDING",
+                status: isStop ? "OPEN" : "PENDING",
                 sequenceNumber,
-                price: price.toString(),
+                price: input.type === "STOP_MARKET" ? null : price.toString(),
+                stopPrice: isStop && input.stopPrice ? new Decimal(input.stopPrice).toString() : null,
                 quantity: quantity.toString(),
                 remainingQty: quantity.toString(),
                 timeInForce: input.timeInForce,

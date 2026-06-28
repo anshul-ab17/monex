@@ -6,6 +6,8 @@ export enum OrderSide {
 export enum OrderType {
   LIMIT = "LIMIT",
   MARKET = "MARKET",
+  STOP_LIMIT = "STOP_LIMIT",
+  STOP_MARKET = "STOP_MARKET",
 }
 
 export enum TimeInForce {

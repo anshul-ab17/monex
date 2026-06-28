@@ -13,7 +13,8 @@ export async function insertOrder(
         type: OrderType;
         status: OrderStatus;
         sequenceNumber: bigint;
-        price?: string;
+        price?: string | null;
+        stopPrice?: string | null;
         quantity: string;
         remainingQty: string;
         timeInForce: TimeInForce;

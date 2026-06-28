@@ -9,6 +9,7 @@ export class OrderSchema {
       type: z.enum(OrderType),
       quantity: z.number().positive(),
       price: z.number().positive().optional(),
+      stopPrice: z.number().positive().optional(),
 
       timeInForce: z
         .enum(TimeInForce)
@@ -20,17 +21,18 @@ export class OrderSchema {
         z.number().positive().optional(),
     }).refine(
       (data) => {
-        if ( data.type === OrderType.LIMIT && !data.price) return false;
-        if ( data.type === OrderType.MARKET && data.price ) return false;
+        if (data.type === OrderType.LIMIT && !data.price) return false;
+        if (data.type === OrderType.MARKET && data.price) return false;
+        if (data.type === OrderType.STOP_LIMIT && (!data.price || !data.stopPrice)) return false;
+        if (data.type === OrderType.STOP_MARKET && !data.stopPrice) return false;
+        if (data.type === OrderType.STOP_MARKET && data.price) return false;
         return true;
       },
       {
-        message: "Invalid price for order type",
+        message: "Invalid price/stopPrice for order type",
         path: ["price"],
       },
     );
 }
 
 export type CreateOrderInput = z.infer<typeof OrderSchema.create>;
-
-  
