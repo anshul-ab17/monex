@@ -4,8 +4,11 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "cd ../.. && bun --watch --env-file apps/server/.env apps/engine/index.ts",
-    "start": "cd ../.. && bun --env-file apps/server/.env apps/engine/index.ts",
+    "dev": "cd ../.. && bun --watch --env-file apps/server/.env apps/engine/v1/index.ts",
+    "dev:v2": "cd v2 && cargo run",
+    "start": "cd ../.. && bun --env-file apps/server/.env apps/engine/v1/index.ts",
+    "start:v2": "cd v2 && cargo run --release",
+    "test:v2": "cd v2 && cargo test",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
