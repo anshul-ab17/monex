@@ -6,15 +6,15 @@
 
 /* Custom Monex design tokens — not covered by shadcn CSS vars */
 @theme {
-  --color-surface: #1E293B;
-  --color-surface-hover: #273548;
-  --color-text-primary: #F8FAFC;
-  --color-text-secondary: #94A3B8;
-  --color-text-muted: #64748B;
-  --color-green: #22C55E;
-  --color-red: #EF4444;
-  --color-accent: #912929;
-  --color-accent-hover: #7A2222;
+  --color-surface: #131C24;
+  --color-surface-hover: #1A2530;
+  --color-text-primary: #DEDEDE;
+  --color-text-secondary: rgba(232, 249, 255, 0.7);
+  --color-text-muted: rgba(232, 249, 255, 0.4);
+  --color-green: #3CE3AB;
+  --color-red: #F23674;
+  --color-accent: #3CE3AB;
+  --color-accent-hover: #2BC99A;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -58,29 +58,29 @@
 /* Dark theme — Monex design palette (dark-only, no :root light theme) */
 .dark {
   --radius: 0.625rem;
-  --background: #0F172A;
-  --foreground: #F8FAFC;
-  --card: #1E293B;
-  --card-foreground: #F8FAFC;
-  --popover: #1E293B;
-  --popover-foreground: #F8FAFC;
-  --primary: #912929;
-  --primary-foreground: #F8FAFC;
-  --secondary: #1E293B;
-  --secondary-foreground: #94A3B8;
-  --muted: #273548;
-  --muted-foreground: #94A3B8;
-  --accent: #912929;
-  --accent-foreground: #F8FAFC;
-  --destructive: #EF4444;
-  --border: #334155;
-  --input: #334155;
-  --ring: #912929;
-  --chart-1: #22C55E;
-  --chart-2: #EF4444;
-  --chart-3: #912929;
-  --chart-4: #94A3B8;
-  --chart-5: #64748B;
+  --background: #0B1117;
+  --foreground: #DEDEDE;
+  --card: #131C24;
+  --card-foreground: #DEDEDE;
+  --popover: #131C24;
+  --popover-foreground: #DEDEDE;
+  --primary: #3CE3AB;
+  --primary-foreground: #0B1117;
+  --secondary: #1A2530;
+  --secondary-foreground: rgba(232, 249, 255, 0.7);
+  --muted: #1F2B38;
+  --muted-foreground: rgba(232, 249, 255, 0.5);
+  --accent: #3CE3AB;
+  --accent-foreground: #0B1117;
+  --destructive: #F23674;
+  --border: #283542;
+  --input: #1A2530;
+  --ring: #3CE3AB;
+  --chart-1: #3CE3AB;
+  --chart-2: #F23674;
+  --chart-3: rgba(60, 227, 171, 0.4);
+  --chart-4: rgba(242, 54, 116, 0.4);
+  --chart-5: rgba(232, 249, 255, 0.2);
 }
 
 @layer base {

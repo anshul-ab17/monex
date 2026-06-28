@@ -46,26 +46,27 @@ export default function Home() {
 
       {/* Hero */}
       <section className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-        <div className="mb-6 flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5">
+        <div className="mb-6 flex items-center gap-2 rounded-full border border-white/10 bg-white/3 px-4 py-1.5">
           <TrendingUp className="h-3.5 w-3.5 text-green" />
           <span className="text-[12px] text-text-secondary">Built on Solana</span>
         </div>
         <h1 className="max-w-2xl text-[56px] font-bold leading-[1.1] tracking-tight text-text-primary">
           Trade on Solana.
           <br />
-          <span className="bg-gradient-to-r from-accent to-rose-400 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-accent to-rose-400 bg-clip-text text-transparent">
             No compromises.
           </span>
         </h1>
         <p className="mt-5 max-w-lg text-[16px] leading-relaxed text-text-secondary">
-          A decentralized exchange engineered for speed — custom matching engine
-          with O(log n) price lookup and O(1) order execution.
+          A decentralized DEX stack on Solana powering spot, futures, perpetual,
+          and event prediction markets with sub-millisecond matching and native
+          on-chain settlement.
         </p>
         <Link
           href="/trade/sol-usdc"
           className="mt-8 inline-flex items-center gap-2 rounded-lg bg-accent px-8 py-3.5 text-[14px] font-bold text-white transition-all hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(145,41,41,0.25)]"
         >
-          Start Trading <ArrowRight className="h-4 w-4" />
+          Launch DEX <ArrowRight className="h-4 w-4" />
         </Link>
 
         {/* Stats */}
@@ -85,7 +86,7 @@ export default function Home() {
           {FEATURES.map(({ icon: Icon, title, description }) => (
             <div
               key={title}
-              className="group rounded-xl border border-white/5 bg-white/[0.02] p-6 transition-all hover:border-white/10 hover:bg-white/[0.04]"
+              className="group rounded-xl border border-white/5 bg-white/2 p-6 transition-all hover:border-white/10 hover:bg-white/4"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
                 <Icon className="h-5 w-5 text-accent" />
