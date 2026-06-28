@@ -9,7 +9,7 @@ interface OrderFormProps {
   marketId: string;
 }
 
-export function OrderForm({ marketId }: OrderFormProps) {
+export function SpotOrderForm({ marketId }: OrderFormProps) {
   const { orderSide, setOrderSide, orderPrice, setOrderPrice, orderQuantity, setOrderQuantity } =
     useTradingStore();
   const createOrder = useCreateOrder();
