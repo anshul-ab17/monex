@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -7,10 +7,10 @@ import { Wallet, ClipboardList } from "lucide-react";
 import { WalletButton } from "./wallet-button";
 
 const VERTICALS = [
-  { href: "/trade/spot/sol-usdc",    label: "Spot",    match: "/trade/spot" },
-  { href: "/trade/futures/sol-usdc", label: "Futures", match: "/trade/futures" },
-  { href: "/trade/perps/sol-usdc",   label: "Perps",   match: "/trade/perps" },
-  { href: "/trade/predict",          label: "Predict", match: "/trade/predict" },
+  { href: "/trade/spot/sol-usdc",      label: "Spot",    match: "/trade/spot" },
+  { href: "/trade/futures/sol-usdc",   label: "Futures", match: "/trade/futures" },
+  { href: "/trade/perps/sol-usdc",     label: "Perps",   match: "/trade/perps" },
+  { href: "/trade/predict/trump-wins", label: "Predict", match: "/trade/predict" },
 ] as const;
 
 const UTIL_ITEMS = [
