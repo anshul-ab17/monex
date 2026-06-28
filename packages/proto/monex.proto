@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package monex;
+
+message OrderCreated {
+  string order_id = 1;
+  string user_id = 2;
+  string market_id = 3;
+  string side = 4;         // BUY | SELL
+  string type = 5;         // LIMIT | MARKET
+  string price = 6;
+  string quantity = 7;
+  string time_in_force = 8;
+  bool post_only = 9;
+  int64 sequence_number = 10;
+}
+
+message TradeExecuted {
+  string trade_id = 1;
+  string buy_order_id = 2;
+  string sell_order_id = 3;
+  string buyer_id = 4;
+  string seller_id = 5;
+  string quantity = 6;
+  string price = 7;
+  string maker_fee = 8;
+  string taker_fee = 9;
+}
+
+message DepthLevel {
+  string price = 1;
+  string quantity = 2;
+}
+
+message DepthSnapshot {
+  string market_id = 1;
+  repeated DepthLevel bids = 2;
+  repeated DepthLevel asks = 3;
+  int64 timestamp = 4;
+}
+
+message TickerUpdate {
+  string market_id = 1;
+  string last_price = 2;
+  string volume_24h = 3;
+  string high_24h = 4;
+  string low_24h = 5;
+  string change_24h = 6;
+}
+
+message Candle {
+  string market_id = 1;
+  string interval = 2;
+  int64 open_time = 3;
+  string open = 4;
+  string high = 5;
+  string low = 6;
+  string close = 7;
+  string volume = 8;
+}
+
+// Envelope wraps all messages with versioning
+message Envelope {
+  uint32 version = 1;
+  string event_type = 2;
+  int64 timestamp = 3;
+  bytes payload = 4;
+}
