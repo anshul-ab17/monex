@@ -38,7 +38,7 @@ export default function Home() {
         </div>
         <Link
           href="/trade/sol-usdc"
-          className="rounded-lg bg-accent px-5 py-2 text-[13px] font-semibold text-white transition-all hover:bg-accent-hover hover:shadow-[0_0_20px_rgba(139,92,246,0.3)]"
+          className="rounded-lg bg-accent px-5 py-2 text-[13px] font-semibold text-white transition-all hover:bg-accent-hover hover:shadow-[0_0_20px_rgba(145,41,41,0.3)]"
         >
           Launch App
         </Link>
@@ -53,7 +53,7 @@ export default function Home() {
         <h1 className="max-w-2xl text-[56px] font-bold leading-[1.1] tracking-tight text-text-primary">
           Trade on Solana.
           <br />
-          <span className="bg-gradient-to-r from-accent to-purple-400 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-accent to-rose-400 bg-clip-text text-transparent">
             No compromises.
           </span>
         </h1>
@@ -63,7 +63,7 @@ export default function Home() {
         </p>
         <Link
           href="/trade/sol-usdc"
-          className="mt-8 inline-flex items-center gap-2 rounded-lg bg-accent px-8 py-3.5 text-[14px] font-bold text-white transition-all hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(139,92,246,0.25)]"
+          className="mt-8 inline-flex items-center gap-2 rounded-lg bg-accent px-8 py-3.5 text-[14px] font-bold text-white transition-all hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(145,41,41,0.25)]"
         >
           Start Trading <ArrowRight className="h-4 w-4" />
         </Link>

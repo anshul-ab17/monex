@@ -14,7 +14,7 @@ export function WalletButton() {
     return (
       <WalletMultiButton
         style={{
-          background: "#8B5CF6",
+          background: "#912929",
           borderRadius: "8px",
           fontSize: "13px",
           height: "32px",

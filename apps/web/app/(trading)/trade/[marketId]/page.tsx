@@ -20,9 +20,14 @@ export default function TradePage({
       {/* Ticker */}
       <TickerBar marketId={marketId} />
 
-      {/* Main trading grid — Hyperliquid-style: OB+Trades | Chart | Form */}
+      {/* Main: Chart | OB+Trades | Form */}
       <div className="flex flex-1 gap-0.5 overflow-hidden">
-        {/* Left: Orderbook + Recent Trades stacked */}
+        {/* Left: Chart (takes most space) */}
+        <div className="flex-1 overflow-hidden rounded-md bg-surface">
+          <TradingChart marketId={marketId} />
+        </div>
+
+        {/* Middle: Orderbook + Recent Trades stacked */}
         <div className="flex w-[280px] shrink-0 flex-col gap-0.5">
           <div className="flex-1 overflow-hidden rounded-md bg-surface">
             <OrderBook marketId={marketId} />
@@ -30,11 +35,6 @@ export default function TradePage({
           <div className="h-[200px] shrink-0 overflow-hidden rounded-md bg-surface">
             <RecentTrades marketId={marketId} />
           </div>
-        </div>
-
-        {/* Center: Chart */}
-        <div className="flex-1 overflow-hidden rounded-md bg-surface">
-          <TradingChart marketId={marketId} />
         </div>
 
         {/* Right: Order Form */}

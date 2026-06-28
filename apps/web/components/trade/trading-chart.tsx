@@ -1,56 +1,53 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, memo } from "react";
 
 interface TradingChartProps {
   marketId: string;
 }
 
-export function TradingChart({ marketId }: TradingChartProps) {
+function TradingChartInner({ marketId }: TradingChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const widgetRef = useRef<unknown>(null);
 
   const symbol = marketId.replace("-", "").toUpperCase();
 
   useEffect(() => {
     if (!containerRef.current) return;
-    containerRef.current.innerHTML = "";
+    const container = containerRef.current;
+    container.innerHTML = "";
 
     const script = document.createElement("script");
-    script.src = "https://s3.tradingview.com/tv.js";
+    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+    script.type = "text/javascript";
     script.async = true;
-    script.onload = () => {
-      if (typeof (window as any).TradingView !== "undefined") {
-        widgetRef.current = new (window as any).TradingView.widget({
-          container_id: containerRef.current!.id,
-          symbol: `BINANCE:${symbol}`,
-          interval: "15",
-          timezone: "Etc/UTC",
-          theme: "dark",
-          style: "1",
-          locale: "en",
-          toolbar_bg: "#1E293B",
-          enable_publishing: false,
-          hide_top_toolbar: false,
-          hide_legend: false,
-          save_image: false,
-          width: "100%",
-          height: "100%",
-          backgroundColor: "#1E293B",
-          gridColor: "#334155",
-        });
-      }
-    };
-    document.head.appendChild(script);
+    script.innerHTML = JSON.stringify({
+      autosize: true,
+      symbol: `BINANCE:${symbol}`,
+      interval: "15",
+      timezone: "Asia/Kolkata",
+      theme: "dark",
+      style: "1",
+      locale: "en",
+      backgroundColor: "rgba(30, 41, 59, 1)",
+      gridColor: "rgba(51, 65, 85, 0.3)",
+      hide_side_toolbar: false,
+      allow_symbol_change: true,
+      calendar: false,
+      support_host: "https://www.tradingview.com",
+    });
+
+    container.appendChild(script);
 
     return () => {
-      if (script.parentNode) script.parentNode.removeChild(script);
+      container.innerHTML = "";
     };
   }, [symbol]);
 
   return (
-    <div className="h-full w-full">
-      <div id={`tv-chart-${marketId}`} ref={containerRef} className="h-full w-full" />
+    <div className="tradingview-widget-container h-full w-full" ref={containerRef}>
+      <div className="tradingview-widget-container__widget h-full w-full" />
     </div>
   );
 }
+
+export const TradingChart = memo(TradingChartInner);
