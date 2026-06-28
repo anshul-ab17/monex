@@ -7,12 +7,13 @@ message OrderCreated {
   string user_id = 2;
   string market_id = 3;
   string side = 4;         // BUY | SELL
-  string type = 5;         // LIMIT | MARKET
+  string type = 5;         // LIMIT | MARKET | STOP_LIMIT | STOP_MARKET
   string price = 6;
   string quantity = 7;
   string time_in_force = 8;
   bool post_only = 9;
   int64 sequence_number = 10;
+  string stop_price = 11;
 }
 
 message TradeExecuted {

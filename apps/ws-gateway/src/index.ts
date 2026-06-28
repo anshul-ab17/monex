@@ -1,20 +1,33 @@
 import { WebSocketServer, WebSocket } from "ws";
 import { createSubscriber } from "./subscriber";
 import { ConnectionManager } from "./connections";
+import type { WireFormat } from "./connections";
 
 const PORT = Number(process.env.WS_GATEWAY_PORT ?? 3002);
 
 const wss = new WebSocketServer({ port: PORT });
 const connections = new ConnectionManager();
 
-const VALID_CHANNELS = /^market:(trades|depth|ticker):[a-f0-9-]{36}$/;
+const VALID_CHANNELS = /^market:(trades|depth|ticker|candle):[a-f0-9-]{36}$/;
 
 const subscriber = createSubscriber(connections);
 
 wss.on("connection", (ws: WebSocket) => {
     ws.on("message", (raw: Buffer | string) => {
         try {
-            const msg = JSON.parse(raw.toString()) as { event?: string; channel?: string };
+            const msg = JSON.parse(raw.toString()) as {
+                event?: string;
+                channel?: string;
+                format?: WireFormat;
+            };
+
+            if (msg.event === "format") {
+                const fmt = msg.format === "proto" ? "proto" : "json";
+                connections.setFormat(ws, fmt);
+                ws.send(JSON.stringify({ event: "format_set", payload: fmt }));
+                return;
+            }
+
             if (!msg.channel || !VALID_CHANNELS.test(msg.channel)) {
                 ws.send(JSON.stringify({ event: "error", payload: "invalid channel" }));
                 return;
