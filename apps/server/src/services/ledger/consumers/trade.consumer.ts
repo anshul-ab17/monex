@@ -5,7 +5,7 @@ import { TradeEventType } from "@repo/events";
 import type { TradeExecutedEvent } from "@repo/events";
 import { ledgerService } from "../ledger.service";
 import { candleService } from "../../market/candle.service";
-import { wsBroadcaster } from "../../../ws/ws.broadcaster";
+import { redis } from "@repo/redis";
 
 export async function startTradeConsumer() {
     await kafkaConsumer.subscribe<TradeExecutedEvent>(
@@ -40,14 +40,18 @@ export async function startTradeConsumer() {
 
             await candleService.updateFromTrade(trade.marketId, priceD, qtyD, trade.createdAt);
 
-            wsBroadcaster.broadcast(`market:trades:${trade.marketId}`, "trade", {
-                tradeId: event.payload.tradeId,
-                marketId: trade.marketId,
-                price: event.payload.price,
-                quantity: event.payload.quantity,
-                takerSide: trade.takerSide,
-                timestamp: trade.createdAt.toISOString(),
+            const tradeMsg = JSON.stringify({
+                event: "trade",
+                payload: {
+                    tradeId: event.payload.tradeId,
+                    marketId: trade.marketId,
+                    price: event.payload.price,
+                    quantity: event.payload.quantity,
+                    takerSide: trade.takerSide,
+                    timestamp: trade.createdAt.toISOString(),
+                },
             });
+            await redis.publish(`market:trades:${trade.marketId}`, tradeMsg);
         },
     );
 }

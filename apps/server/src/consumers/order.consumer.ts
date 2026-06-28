@@ -4,7 +4,7 @@ import { kafkaConsumer, KafkaTopics } from "@repo/kafka";
 import { OrderEventType } from "@repo/events";
 import { findOrderById, setOrderStatus } from "../services/order/order.repository";
 import { depthService } from "../services/market/depth.service";
-import { wsBroadcaster } from "../ws/ws.broadcaster";
+import { redis } from "@repo/redis";
 
 interface OrderEngineEvent {
     eventType: string;
@@ -14,9 +14,10 @@ interface OrderEngineEvent {
 async function broadcastDepth(marketId: string) {
     try {
         const depth = await depthService.getDepth(marketId);
-        wsBroadcaster.broadcast(`market:depth:${marketId}`, "depth", depth);
+        const msg = JSON.stringify({ event: "depth", payload: depth });
+        await redis.publish(`market:depth:${marketId}`, msg);
     } catch {
-        // non-critical; don't crash consumer on WS error
+        // non-critical
     }
 }
 

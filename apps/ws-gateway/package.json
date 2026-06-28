@@ -1,0 +1,19 @@
+{
+  "name": "ws-gateway",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "cd ../.. && bun --watch --env-file apps/server/.env apps/ws-gateway/src/index.ts",
+    "start": "cd ../.. && bun --env-file apps/server/.env apps/ws-gateway/src/index.ts"
+  },
+  "dependencies": {
+    "@repo/config": "workspace:*",
+    "@repo/redis": "workspace:*",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.10",
+    "@types/bun": "latest"
+  }
+}
