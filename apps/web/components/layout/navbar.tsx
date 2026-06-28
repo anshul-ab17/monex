@@ -16,11 +16,14 @@ export function Navbar() {
   const pathname = usePathname();
 
   return (
-    <header className="flex h-14 items-center border-b border-border bg-surface px-4">
-      <Link href="/" className="mr-8 text-lg font-bold text-text-primary">
-        Monex
+    <header className="flex h-12 items-center border-b border-white/5 bg-surface px-4">
+      <Link href="/" className="mr-6 flex items-center gap-2">
+        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent">
+          <span className="text-xs font-black text-white">M</span>
+        </div>
+        <span className="text-sm font-bold tracking-wide text-text-primary">MONEX</span>
       </Link>
-      <nav className="flex items-center gap-1">
+      <nav className="flex items-center">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           const active = pathname.startsWith(href);
           return (
@@ -28,13 +31,13 @@ export function Navbar() {
               key={href}
               href={href === "/trade" ? "/trade/sol-usdc" : href}
               className={cn(
-                "flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                "flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium transition-colors",
                 active
-                  ? "bg-accent/10 text-accent"
-                  : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
+                  ? "text-text-primary"
+                  : "text-text-muted hover:text-text-secondary"
               )}
             >
-              <Icon className="h-4 w-4" />
+              <Icon className="h-3.5 w-3.5" />
               {label}
             </Link>
           );

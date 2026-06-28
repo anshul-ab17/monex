@@ -16,35 +16,36 @@ export default function TradePage({
   const { marketId } = use(params);
 
   return (
-    <div className="grid h-full grid-cols-[1fr_280px_320px] grid-rows-[auto_1fr_240px] gap-px bg-border">
+    <div className="flex h-full flex-col gap-0.5 bg-background p-1">
       {/* Ticker */}
-      <div className="col-span-3 bg-surface">
-        <TickerBar marketId={marketId} />
+      <TickerBar marketId={marketId} />
+
+      {/* Main trading grid — Hyperliquid-style: OB+Trades | Chart | Form */}
+      <div className="flex flex-1 gap-0.5 overflow-hidden">
+        {/* Left: Orderbook + Recent Trades stacked */}
+        <div className="flex w-[280px] shrink-0 flex-col gap-0.5">
+          <div className="flex-1 overflow-hidden rounded-md bg-surface">
+            <OrderBook marketId={marketId} />
+          </div>
+          <div className="h-[200px] shrink-0 overflow-hidden rounded-md bg-surface">
+            <RecentTrades marketId={marketId} />
+          </div>
+        </div>
+
+        {/* Center: Chart */}
+        <div className="flex-1 overflow-hidden rounded-md bg-surface">
+          <TradingChart marketId={marketId} />
+        </div>
+
+        {/* Right: Order Form */}
+        <div className="w-[300px] shrink-0 overflow-hidden rounded-md bg-surface">
+          <OrderForm marketId={marketId} />
+        </div>
       </div>
 
-      {/* Chart */}
-      <div className="bg-surface">
-        <TradingChart marketId={marketId} />
-      </div>
-
-      {/* OrderBook */}
-      <div className="bg-surface">
-        <OrderBook marketId={marketId} />
-      </div>
-
-      {/* Order Form */}
-      <div className="bg-surface">
-        <OrderForm marketId={marketId} />
-      </div>
-
-      {/* Open Orders */}
-      <div className="col-span-2 bg-surface">
+      {/* Bottom: Open Orders */}
+      <div className="h-[180px] shrink-0 overflow-hidden rounded-md bg-surface">
         <OpenOrders marketId={marketId} />
-      </div>
-
-      {/* Recent Trades */}
-      <div className="bg-surface">
-        <RecentTrades marketId={marketId} />
       </div>
     </div>
   );

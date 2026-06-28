@@ -17,6 +17,15 @@ interface TickerBarProps {
   marketId: string;
 }
 
+function Stat({ label, value, className }: { label: string; value: string; className?: string }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-[11px] text-text-muted">{label}</span>
+      <span className={cn("font-mono text-[13px] text-text-secondary", className)}>{value}</span>
+    </div>
+  );
+}
+
 export function TickerBar({ marketId }: TickerBarProps) {
   const { data: market } = useMarket(marketId);
   const [ticker, setTicker] = useState<TickerData | null>(null);
@@ -26,44 +35,33 @@ export function TickerBar({ marketId }: TickerBarProps) {
     useCallback((data: unknown) => setTicker(data as TickerData), [])
   );
 
-  const label = market ? `${market.baseAsset.symbol}/${market.quoteAsset.symbol}` : marketId;
+  const label = market ? `${market.baseAsset.symbol}/${market.quoteAsset.symbol}` : marketId.replace("-", "/").toUpperCase();
 
   return (
-    <div className="flex items-center gap-6 px-4 py-2">
-      <span className="text-base font-bold text-text-primary">{label}</span>
-      {ticker ? (
-        <>
-          <span
-            className={cn(
-              "font-mono text-lg font-bold",
-              ticker.change24h >= 0 ? "text-green" : "text-red"
-            )}
-          >
+    <div className="flex h-10 items-center gap-5 rounded-md bg-surface px-4">
+      <div className="flex items-center gap-3">
+        <span className="text-[15px] font-bold text-text-primary">{label}</span>
+        {ticker && (
+          <span className={cn("font-mono text-[15px] font-bold", ticker.change24h >= 0 ? "text-green" : "text-red")}>
             {formatPrice(ticker.lastPrice)}
           </span>
-          <div className="flex flex-col">
-            <span className="text-[10px] text-text-muted">24h Change</span>
-            <span
-              className={cn("font-mono text-xs", ticker.change24h >= 0 ? "text-green" : "text-red")}
-            >
-              {formatPercent(ticker.change24h)}
-            </span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-[10px] text-text-muted">24h High</span>
-            <span className="font-mono text-xs text-text-secondary">{formatPrice(ticker.high24h)}</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-[10px] text-text-muted">24h Low</span>
-            <span className="font-mono text-xs text-text-secondary">{formatPrice(ticker.low24h)}</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-[10px] text-text-muted">24h Volume</span>
-            <span className="font-mono text-xs text-text-secondary">{formatPrice(ticker.volume24h)}</span>
-          </div>
-        </>
+        )}
+      </div>
+      {ticker ? (
+        <div className="flex items-center gap-4 border-l border-white/5 pl-4">
+          <Stat
+            label="24h"
+            value={formatPercent(ticker.change24h)}
+            className={ticker.change24h >= 0 ? "text-green" : "text-red"}
+          />
+          <Stat label="High" value={formatPrice(ticker.high24h)} />
+          <Stat label="Low" value={formatPrice(ticker.low24h)} />
+          <Stat label="Vol" value={formatPrice(ticker.volume24h)} />
+        </div>
       ) : (
-        <span className="font-mono text-sm text-text-muted">—</span>
+        <div className="flex items-center gap-4 border-l border-white/5 pl-4">
+          <span className="font-mono text-xs text-text-muted">Connecting...</span>
+        </div>
       )}
     </div>
   );

@@ -22,21 +22,22 @@ function PriceRow({
   onClick: (price: string) => void;
 }) {
   const pct = (Number(level.quantity) / maxQty) * 100;
-  const color = side === "bid" ? "bg-green/10" : "bg-red/10";
 
   return (
     <button
       onClick={() => onClick(level.price)}
-      className="relative grid w-full cursor-pointer grid-cols-2 px-2 py-0.5 text-right font-mono text-xs hover:bg-surface-hover transition-colors"
+      className="relative flex w-full cursor-pointer items-center px-3 py-[3px] font-mono text-[12px] transition-colors hover:bg-white/[0.03]"
     >
       <div
-        className={`absolute inset-y-0 right-0 ${color}`}
+        className={`absolute inset-y-0 ${side === "bid" ? "right-0 bg-green/[0.08]" : "right-0 bg-red/[0.08]"}`}
         style={{ width: `${pct}%` }}
       />
-      <span className={`relative z-10 ${side === "bid" ? "text-green" : "text-red"}`}>
+      <span className={`relative z-10 w-1/2 text-left ${side === "bid" ? "text-green" : "text-red"}`}>
         {formatPrice(level.price)}
       </span>
-      <span className="relative z-10 text-text-secondary">{formatQty(level.quantity)}</span>
+      <span className="relative z-10 w-1/2 text-right text-text-secondary">
+        {formatQty(level.quantity)}
+      </span>
     </button>
   );
 }
@@ -56,11 +57,15 @@ export function OrderBook({ marketId }: OrderBookProps) {
 
   const displayDepth = wsDepth || depth;
   if (!displayDepth) {
-    return <div className="flex h-full items-center justify-center text-text-muted text-sm">Loading...</div>;
+    return (
+      <div className="flex h-full items-center justify-center text-text-muted text-xs">
+        Loading orderbook...
+      </div>
+    );
   }
 
-  const asks = displayDepth.asks.slice(0, 12).reverse();
-  const bids = displayDepth.bids.slice(0, 12);
+  const asks = displayDepth.asks.slice(0, 14).reverse();
+  const bids = displayDepth.bids.slice(0, 14);
   const allQtys = [...asks, ...bids].map((l) => Number(l.quantity));
   const maxQty = Math.max(...allQtys, 1);
 
@@ -71,27 +76,35 @@ export function OrderBook({ marketId }: OrderBookProps) {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center justify-between px-2 py-1">
-        <span className="text-xs font-semibold text-text-secondary">Order Book</span>
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-white/5 px-3 py-2">
+        <span className="text-[12px] font-semibold text-text-primary">Order Book</span>
       </div>
-      <div className="grid grid-cols-2 px-2 text-[10px] text-text-muted">
-        <span className="text-right">Price</span>
-        <span className="text-right">Qty</span>
+
+      {/* Column headers */}
+      <div className="flex px-3 py-1 text-[10px] uppercase tracking-wider text-text-muted">
+        <span className="w-1/2">Price</span>
+        <span className="w-1/2 text-right">Size</span>
       </div>
-      <div className="flex-1 overflow-hidden">
-        <div className="flex flex-col justify-end">
-          {asks.map((a, i) => (
-            <PriceRow key={`a-${i}`} level={a} maxQty={maxQty} side="ask" onClick={setOrderPrice} />
-          ))}
-        </div>
-        <div className="border-y border-border px-2 py-1 text-center font-mono text-xs text-text-muted">
-          Spread: {spread}
-        </div>
-        <div>
-          {bids.map((b, i) => (
-            <PriceRow key={`b-${i}`} level={b} maxQty={maxQty} side="bid" onClick={setOrderPrice} />
-          ))}
-        </div>
+
+      {/* Asks */}
+      <div className="flex flex-1 flex-col justify-end overflow-hidden">
+        {asks.map((a, i) => (
+          <PriceRow key={`a-${i}`} level={a} maxQty={maxQty} side="ask" onClick={setOrderPrice} />
+        ))}
+      </div>
+
+      {/* Spread */}
+      <div className="flex items-center justify-center border-y border-white/5 px-3 py-1.5">
+        <span className="font-mono text-[12px] font-medium text-text-primary">{spread}</span>
+        <span className="ml-2 text-[10px] text-text-muted">Spread</span>
+      </div>
+
+      {/* Bids */}
+      <div className="flex flex-1 flex-col overflow-hidden">
+        {bids.map((b, i) => (
+          <PriceRow key={`b-${i}`} level={b} maxQty={maxQty} side="bid" onClick={setOrderPrice} />
+        ))}
       </div>
     </div>
   );
