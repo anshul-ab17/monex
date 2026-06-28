@@ -6,6 +6,8 @@ enum OrderSide {
 enum OrderType {
   LIMIT
   MARKET
+  STOP_LIMIT
+  STOP_MARKET
 }
 
 enum TimeInForce {
@@ -36,6 +38,7 @@ model Order {
   
   sequenceNumber BigInt     @unique
   price         Decimal?    @db.Decimal(30,10)
+  stopPrice     Decimal?    @db.Decimal(30,10)
   quantity      Decimal     @db.Decimal(30,10)
   remainingQty  Decimal     @db.Decimal(30,10)
   filledQty     Decimal     @default(0) @db.Decimal(30,10)

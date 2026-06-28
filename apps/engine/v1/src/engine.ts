@@ -4,6 +4,7 @@ import { orderBookStore, type BookOrder } from "./orderbook/index";
 import { enginePublisher } from "./publisher";
 import type { OrderCreatedPayload } from "@repo/events";
 import { calculateFees, type FeeSchedule } from "./fees";
+import { stopMonitor } from "./stop-monitor";
 
 export async function handleOrderCreated(payload: OrderCreatedPayload) {
     const order = await db.order.findUnique({
@@ -11,6 +12,23 @@ export async function handleOrderCreated(payload: OrderCreatedPayload) {
         include: { market: { include: { baseAsset: true, quoteAsset: true } } },
     });
     if (!order || order.status !== "PENDING") return;
+
+    // Stop orders: register with monitor, don't enter book
+    if (order.type === "STOP_LIMIT" || order.type === "STOP_MARKET") {
+        await db.order.update({ where: { id: order.id }, data: { status: "OPEN" } });
+        stopMonitor.add({
+            orderId: order.id,
+            userId: order.userId,
+            marketId: order.marketId,
+            side: order.side as "BUY" | "SELL",
+            type: order.type as "STOP_LIMIT" | "STOP_MARKET",
+            stopPrice: new Decimal(order.stopPrice!.toString()),
+            price: order.price ? new Decimal(order.price.toString()) : null,
+            quantity: new Decimal(order.remainingQty.toString()),
+        });
+        await enginePublisher.orderAccepted(order.id, order.userId, order.marketId);
+        return;
+    }
 
     // Engine only handles LIMIT; MARKET orders are rejected at API layer
     if (order.type !== "LIMIT" || !order.price) {
@@ -106,6 +124,9 @@ export async function handleOrderCreated(payload: OrderCreatedPayload) {
     }
 
     book.applyMatches(matches, order.side as "BUY" | "SELL");
+
+    const lastMatchPrice = matches[matches.length - 1]!.price;
+    await stopMonitor.checkPrice(order.marketId, lastMatchPrice);
 
     const takerFilledQty = remainingQty.sub(takerRemaining);
     const takerFilled = takerRemaining.isZero();
