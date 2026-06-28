@@ -3,6 +3,7 @@ import db from "@repo/db";
 import { marketService } from "../market/market.service";
 import { insertOrder, findOrderById, findOrdersByUser, setOrderStatus } from "./order.repository";
 import { BadRequestError, NotFoundError, InsufficientBalanceError } from "../../utils/errors";
+import { riskService } from "../risk/risk.service";
 import type { CreateOrderInput } from "validation";
 
 export const orderService = {
@@ -18,7 +19,13 @@ export const orderService = {
         const assetId = input.side === "BUY" ? market.quoteAssetId : market.baseAssetId;
         const reserveAmt = input.side === "BUY" ? price.mul(quantity) : quantity;
 
-        // ponytail: Date.now() as temp sequenceNumber; engine assigns real sequence on accept
+        const riskCheck = await riskService.preTradeCheck({
+            userId, marketId: input.marketId, side: input.side, price, quantity, assetId,
+        });
+        if (!riskCheck.passed) {
+            throw new BadRequestError(`Risk check failed: ${riskCheck.reason}`);
+        }
+
         const sequenceNumber = BigInt(Date.now());
 
         return db.$transaction(async (tx) => {
