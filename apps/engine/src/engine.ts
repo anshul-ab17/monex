@@ -3,6 +3,7 @@ import db from "@repo/db";
 import { orderBookStore, type BookOrder } from "./orderbook/index";
 import { enginePublisher } from "./publisher";
 import type { OrderCreatedPayload } from "@repo/events";
+import { calculateFees, type FeeSchedule } from "./fees";
 
 export async function handleOrderCreated(payload: OrderCreatedPayload) {
     const order = await db.order.findUnique({
@@ -52,13 +53,18 @@ export async function handleOrderCreated(payload: OrderCreatedPayload) {
         return;
     }
 
-    // Process each match
+    const feeSchedule: FeeSchedule = {
+        makerFee: new Decimal(order.market.makerFee.toString()),
+        takerFee: new Decimal(order.market.takerFee.toString()),
+    };
+
     let takerRemaining = remainingQty;
 
     for (const match of matches) {
         takerRemaining = takerRemaining.sub(match.quantity);
         const tradeId = crypto.randomUUID();
 
+        const fees = calculateFees(match.price, match.quantity, feeSchedule);
         const isTakerBuy = order.side === "BUY";
         const buyOrderId = isTakerBuy ? order.id : match.makerOrderId;
         const sellOrderId = isTakerBuy ? match.makerOrderId : order.id;
@@ -76,11 +82,12 @@ export async function handleOrderCreated(payload: OrderCreatedPayload) {
                 takerSide: order.side,
                 price: match.price.toString(),
                 quantity: match.quantity.toString(),
-                fee: "0", // ponytail: fee calc deferred
+                fee: fees.totalFee.toString(),
+                makerFee: fees.makerFee.toString(),
+                takerFee: fees.takerFee.toString(),
             },
         });
 
-        // Update maker order in DB
         const makerNewRemaining = match.makerRemainingQtyBefore.sub(match.quantity);
         const makerRow = await db.order.findUnique({
             where: { id: match.makerOrderId },
@@ -95,7 +102,7 @@ export async function handleOrderCreated(payload: OrderCreatedPayload) {
             },
         });
 
-        await enginePublisher.tradeExecuted({ tradeId, buyOrderId, sellOrderId, buyerId, sellerId, quantity: match.quantity.toString(), price: match.price.toString() });
+        await enginePublisher.tradeExecuted({ tradeId, buyOrderId, sellOrderId, buyerId, sellerId, quantity: match.quantity.toString(), price: match.price.toString(), makerFee: fees.makerFee.toString(), takerFee: fees.takerFee.toString() });
     }
 
     book.applyMatches(matches, order.side as "BUY" | "SELL");

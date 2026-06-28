@@ -33,7 +33,9 @@ export async function startTradeConsumer() {
                 quoteAssetId: trade.market.quoteAssetId,
                 quantity: qtyD,
                 price: priceD,
-                fee: new Decimal(trade.fee.toString()),
+                makerFee: new Decimal(trade.makerFee.toString()),
+                takerFee: new Decimal(trade.takerFee.toString()),
+                takerSide: trade.takerSide,
             });
 
             await candleService.updateFromTrade(trade.marketId, priceD, qtyD, trade.createdAt);

@@ -11,6 +11,8 @@ model Trade {
   price       Decimal   @db.Decimal(30,10)
   quantity    Decimal   @db.Decimal(30,10)
   fee         Decimal   @default(0) @db.Decimal(30,10)
+  makerFee    Decimal   @default(0) @db.Decimal(30,10)
+  takerFee    Decimal   @default(0) @db.Decimal(30,10)
   createdAt   DateTime  @default(now())
 
   market    Market @relation(fields: [marketId], references: [id])

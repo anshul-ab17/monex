@@ -117,12 +117,18 @@ export class LedgerService {
         quoteAssetId: string;
         quantity: Decimal;
         price: Decimal;
-        fee: Decimal;
+        makerFee: Decimal;
+        takerFee: Decimal;
+        takerSide: string;
     }) {
-        const { tradeId, buyerId, sellerId, baseAssetId, quoteAssetId, quantity, price, fee } =
+        const { tradeId, buyerId, sellerId, baseAssetId, quoteAssetId, quantity, price, makerFee, takerFee, takerSide } =
             input;
         const totalQuote = price.mul(quantity);
-        const sellerReceives = totalQuote.sub(fee);
+
+        const buyerFee = takerSide === "BUY" ? takerFee : makerFee;
+        const sellerFee = takerSide === "SELL" ? takerFee : makerFee;
+        const sellerReceives = totalQuote.sub(sellerFee);
+        const totalFee = makerFee.add(takerFee);
 
         await this.db.$transaction(async (tx) => {
             const [buyerBase, buyerQuote, sellerBase, sellerQuote, feesAccount] = await Promise.all([
@@ -135,10 +141,10 @@ export class LedgerService {
 
             await createJournal(tx, "TRADE", tradeId, [
                 { accountId: buyerQuote.id, amount: totalQuote.negated().toString(), description: "BUYER_PAYS_QUOTE" },
-                { accountId: buyerBase.id, amount: quantity.toString(), description: "BUYER_RECEIVES_BASE" },
+                { accountId: buyerBase.id, amount: quantity.sub(buyerFee).toString(), description: "BUYER_RECEIVES_BASE_MINUS_FEE" },
                 { accountId: sellerBase.id, amount: quantity.negated().toString(), description: "SELLER_PAYS_BASE" },
-                { accountId: sellerQuote.id, amount: sellerReceives.toString(), description: "SELLER_RECEIVES_QUOTE" },
-                { accountId: feesAccount.id, amount: fee.toString(), description: "FEE" },
+                { accountId: sellerQuote.id, amount: sellerReceives.toString(), description: "SELLER_RECEIVES_QUOTE_MINUS_FEE" },
+                { accountId: feesAccount.id, amount: totalFee.toString(), description: "FEES_COLLECTED" },
             ]);
 
             await Promise.all([

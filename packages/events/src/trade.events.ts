@@ -14,6 +14,8 @@ export interface TradeExecutedPayload {
     sellerId: string;
     quantity: string;
     price: string;
+    makerFee: string;
+    takerFee: string;
 }
 
 export type TradeExecutedEvent =  BaseEvent<TradeExecutedPayload>;
