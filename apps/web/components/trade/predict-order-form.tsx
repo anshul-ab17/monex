@@ -14,8 +14,9 @@ export function PredictOrderForm({ eventId: _ }: PredictOrderFormProps) {
   const [amount, setAmount] = useState("");
 
   const prob = side === "YES" ? YES_PROB : 100 - YES_PROB;
-  const payout = amount ? (Number(amount) / (prob / 100)).toFixed(2) : "—";
-  const profit = amount ? ((Number(amount) / (prob / 100)) - Number(amount)).toFixed(2) : "—";
+  const amountNum = parseFloat(amount);
+  const payout = isFinite(amountNum) && amountNum > 0 ? (amountNum / (prob / 100)).toFixed(2) : "—";
+  const profit = isFinite(amountNum) && amountNum > 0 ? ((amountNum / (prob / 100)) - amountNum).toFixed(2) : "—";
 
   return (
     <div className="flex h-full flex-col">

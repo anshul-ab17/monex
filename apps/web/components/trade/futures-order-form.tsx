@@ -149,7 +149,7 @@ export function FuturesOrderForm({ marketId: _ }: FuturesOrderFormProps) {
           <div className="flex items-center justify-between">
             <span className="text-[11px] text-text-muted">Position Size</span>
             <span className="font-mono text-[12px] text-text-secondary">
-              {collateral ? `$${(Number(collateral) * leverage).toFixed(2)}` : "—"}
+              {(() => { const n = parseFloat(collateral); return isFinite(n) && n > 0 ? `$${(n * leverage).toFixed(2)}` : "—"; })()}
             </span>
           </div>
         </div>

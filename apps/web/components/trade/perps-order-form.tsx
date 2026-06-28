@@ -15,12 +15,8 @@ export function PerpsOrderForm({ marketId: _ }: PerpsOrderFormProps) {
   const [margin, setMargin] = useState<"Cross" | "Isolated">("Cross");
   const [collateral, setCollateral] = useState("");
 
-  const liqPrice =
-    collateral && leverage
-      ? side === "LONG"
-        ? `~$${(100000 / leverage).toFixed(2)}`
-        : `~$${(100000 * leverage).toFixed(2)}`
-      : "—";
+  // ponytail: placeholder — real liq price needs mark price from perps feed
+  const liqPrice = "—";
 
   return (
     <div className="flex h-full flex-col">
@@ -127,7 +123,7 @@ export function PerpsOrderForm({ marketId: _ }: PerpsOrderFormProps) {
           <div className="flex items-center justify-between">
             <span className="text-[11px] text-text-muted">Position Size</span>
             <span className="font-mono text-[12px] text-text-secondary">
-              {collateral ? `$${(Number(collateral) * leverage).toFixed(2)}` : "—"}
+              {(() => { const n = parseFloat(collateral); return isFinite(n) && n > 0 ? `$${(n * leverage).toFixed(2)}` : "—"; })()}
             </span>
           </div>
         </div>
