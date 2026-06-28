@@ -5,6 +5,7 @@ import { TradeEventType } from "@repo/events";
 import type { TradeExecutedEvent } from "@repo/events";
 import { ledgerService } from "../ledger.service";
 import { candleService } from "../../market/candle.service";
+import { tickerService } from "../../market/ticker.service";
 import { redis } from "@repo/redis";
 
 export async function startTradeConsumer() {
@@ -52,6 +53,8 @@ export async function startTradeConsumer() {
                 },
             });
             await redis.publish(`market:trades:${trade.marketId}`, tradeMsg);
+
+            await tickerService.publishTicker(trade.marketId);
         },
     );
 }

@@ -2,6 +2,7 @@ import type { FastifyRequest, FastifyReply } from "fastify";
 import { marketService } from "../services/market/market.service";
 import { candleService } from "../services/market/candle.service";
 import { depthService } from "../services/market/depth.service";
+import { tickerService } from "../services/market/ticker.service";
 import { ok, fail } from "../utils/response";
 import type { CandleInterval } from "@repo/db";
 
@@ -34,5 +35,12 @@ export const marketController = {
         }
         const candles = await candleService.getCandles(id, interval as CandleInterval, parseInt(limit));
         return reply.send(ok(candles));
+    },
+
+    async getTicker(request: FastifyRequest, reply: FastifyReply) {
+        const { id } = request.params as { id: string };
+        const ticker = await tickerService.getTicker(id);
+        if (!ticker) return reply.code(404).send(fail("No trades yet"));
+        return reply.send(ok(ticker));
     },
 };
