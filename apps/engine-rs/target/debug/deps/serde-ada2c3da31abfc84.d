@@ -1,0 +1,14 @@
+C:\Users\atuly\Documents\Projects\monex\apps\engine-rs\target\debug\deps\serde-ada2c3da31abfc84.d: C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs C:\Users\atuly\Documents\Projects\monex\apps\engine-rs\target\debug\build\serde-48166ab98eeaf37e\out/private.rs
+
+C:\Users\atuly\Documents\Projects\monex\apps\engine-rs\target\debug\deps\libserde-ada2c3da31abfc84.rlib: C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs C:\Users\atuly\Documents\Projects\monex\apps\engine-rs\target\debug\build\serde-48166ab98eeaf37e\out/private.rs
+
+C:\Users\atuly\Documents\Projects\monex\apps\engine-rs\target\debug\deps\libserde-ada2c3da31abfc84.rmeta: C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs C:\Users\atuly\Documents\Projects\monex\apps\engine-rs\target\debug\build\serde-48166ab98eeaf37e\out/private.rs
+
+C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs:
+C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs:
+C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs:
+C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs:
+C:\Users\atuly\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs:
+C:\Users\atuly\Documents\Projects\monex\apps\engine-rs\target\debug\build\serde-48166ab98eeaf37e\out/private.rs:
+
+# env-dep:OUT_DIR=C:\\Users\\atuly\\Documents\\Projects\\monex\\apps\\engine-rs\\target\\debug\\build\\serde-48166ab98eeaf37e\\out
