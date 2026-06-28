@@ -20,11 +20,17 @@ pub enum OrderResult {
     Rejected { reason: String },
     Filled { trades: Vec<TradeOutput> },
     PartiallyFilled { trades: Vec<TradeOutput>, remaining: rust_decimal::Decimal },
+    StopAccepted,
+}
+
+pub struct StopOrder {
+    pub order: BookOrder,
 }
 
 pub struct MatchingEngine {
     books: HashMap<String, OrderBook>,
     fee_schedules: HashMap<String, FeeSchedule>,
+    stop_orders: HashMap<String, Vec<StopOrder>>,
 }
 
 impl MatchingEngine {
@@ -32,6 +38,7 @@ impl MatchingEngine {
         Self {
             books: HashMap::new(),
             fee_schedules: HashMap::new(),
+            stop_orders: HashMap::new(),
         }
     }
 
@@ -41,6 +48,12 @@ impl MatchingEngine {
     }
 
     pub fn process_order(&mut self, order: BookOrder) -> OrderResult {
+        if order.order_type == "STOP_LIMIT" || order.order_type == "STOP_MARKET" {
+            let stops = self.stop_orders.entry(order.market_id.clone()).or_default();
+            stops.push(StopOrder { order });
+            return OrderResult::StopAccepted;
+        }
+
         let book = self.books.entry(order.market_id.clone()).or_insert_with(OrderBook::new);
         let schedule = self.fee_schedules.get(&order.market_id);
 
@@ -110,6 +123,30 @@ impl MatchingEngine {
         }
     }
 
+    pub fn check_stops(&mut self, market_id: &str, last_price: rust_decimal::Decimal) -> Vec<BookOrder> {
+        let stops = match self.stop_orders.get_mut(market_id) {
+            Some(s) => s,
+            None => return vec![],
+        };
+
+        let mut triggered = vec![];
+        stops.retain(|s| {
+            let stop_price = s.order.stop_price.unwrap_or(rust_decimal::Decimal::ZERO);
+            let hit = match s.order.side {
+                Side::Buy => last_price >= stop_price,
+                Side::Sell => last_price <= stop_price,
+            };
+            if hit {
+                triggered.push(s.order.clone());
+                false
+            } else {
+                true
+            }
+        });
+
+        triggered
+    }
+
     pub fn depth(&self, market_id: &str, levels: usize) -> Option<(Vec<(rust_decimal::Decimal, rust_decimal::Decimal)>, Vec<(rust_decimal::Decimal, rust_decimal::Decimal)>)> {
         self.books.get(market_id).map(|b| b.depth(levels))
     }
@@ -146,6 +183,8 @@ mod tests {
             sequence_number: 1,
             time_in_force: "GTC".to_string(),
             post_only: false,
+            stop_price: None,
+            order_type: "LIMIT".to_string(),
         }
     }
 

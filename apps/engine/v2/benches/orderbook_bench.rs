@@ -18,6 +18,8 @@ fn bench_insert_and_match(c: &mut Criterion) {
                     sequence_number: i,
                     time_in_force: "GTC".to_string(),
                     post_only: false,
+                    stop_price: None,
+                    order_type: "LIMIT".to_string(),
                 });
             }
         })
@@ -52,6 +54,8 @@ fn bench_insert_and_match(c: &mut Criterion) {
                     sequence_number: i,
                     time_in_force: "GTC".to_string(),
                     post_only: false,
+                    stop_price: None,
+                    order_type: "LIMIT".to_string(),
                 });
             }
             let sell = BookOrder {
@@ -64,6 +68,8 @@ fn bench_insert_and_match(c: &mut Criterion) {
                 sequence_number: 9999,
                 time_in_force: "GTC".to_string(),
                 post_only: false,
+                stop_price: None,
+                order_type: "LIMIT".to_string(),
             };
             b2.match_order(&sell);
         })

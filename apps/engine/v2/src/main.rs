@@ -2,6 +2,7 @@ use std::sync::Arc;
 use tokio::sync::RwLock;
 use axum::{Router, routing::get, Json, extract::State};
 use monex_engine::matching::MatchingEngine;
+use monex_engine::kafka::consumer::run_consumer;
 
 type SharedEngine = Arc<RwLock<MatchingEngine>>;
 
@@ -19,6 +20,14 @@ async fn main() {
     tracing_subscriber::fmt::init();
 
     let engine = Arc::new(RwLock::new(MatchingEngine::new()));
+
+    let brokers = std::env::var("KAFKA_BROKERS").unwrap_or_else(|_| "localhost:19092".to_string());
+    let topic = std::env::var("KAFKA_ENGINE_TOPIC").unwrap_or_else(|_| "engine".to_string());
+
+    let kafka_engine = engine.clone();
+    tokio::spawn(async move {
+        run_consumer(&brokers, "monex-engine-v2", &topic, kafka_engine).await;
+    });
 
     let app = Router::new()
         .route("/health", get(health))

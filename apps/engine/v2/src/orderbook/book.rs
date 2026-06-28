@@ -209,6 +209,8 @@ mod tests {
             sequence_number: seq,
             time_in_force: "GTC".to_string(),
             post_only: false,
+            stop_price: None,
+            order_type: "LIMIT".to_string(),
         }
     }
 
