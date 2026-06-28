@@ -16,7 +16,7 @@ export default function TradePage({
   const { marketId } = use(params);
 
   return (
-    <div className="flex h-full flex-col gap-0.5 bg-background p-1">
+    <div className="flex h-full flex-col gap-2 bg-background p-1">
       {/* Ticker */}
       <TickerBar marketId={marketId} />
 
