@@ -41,6 +41,17 @@ export async function startTradeConsumer() {
 
             await candleService.updateFromTrade(trade.marketId, priceD, qtyD, trade.createdAt);
 
+            const candleMsg = JSON.stringify({
+                event: "candle",
+                payload: {
+                    marketId: trade.marketId,
+                    price: price,
+                    quantity: quantity,
+                    timestamp: trade.createdAt.toISOString(),
+                },
+            });
+            await redis.publish(`market:candle:${trade.marketId}`, candleMsg);
+
             const tradeMsg = JSON.stringify({
                 event: "trade",
                 payload: {
