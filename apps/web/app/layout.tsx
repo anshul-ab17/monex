@@ -1,13 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import dynamic from "next/dynamic";
+import { ClientProviders } from "@/components/client-providers";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
-
-// ssr: false — @solana/web3.js does module-level init that crashes the RSC worker in Node.js
-const Providers = dynamic(() => import("@/components/providers").then((m) => m.Providers), {
-  ssr: false,
-});
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,9 +26,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>
+        <ClientProviders>
           <TooltipProvider>{children}</TooltipProvider>
-        </Providers>
+        </ClientProviders>
       </body>
     </html>
   );
