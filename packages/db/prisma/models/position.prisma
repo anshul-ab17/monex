@@ -21,6 +21,8 @@ model Position {
   user   User   @relation(fields: [userId], references: [id])
   market Market @relation(fields: [marketId], references: [id])
 
+  marginAccount MarginAccount?
+
   @@unique([userId, marketId, side])
   @@index([userId])
   @@index([marketId])
