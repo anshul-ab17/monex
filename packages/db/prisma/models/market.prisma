@@ -20,6 +20,8 @@ model Market {
   takerFee        Decimal     @default(0.0020) @db.Decimal(10,6)
 
   isActive        Boolean     @default(true)
+  resolvesAt      DateTime?
+  resolvedAt      DateTime?
   createdAt       DateTime    @default(now())
   baseAsset       Asset @relation("BaseAsset", fields: [baseAssetId], references: [id])
   quoteAsset      Asset @relation("QuoteAsset", fields: [quoteAssetId], references: [id])

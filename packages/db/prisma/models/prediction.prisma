@@ -1,7 +1,11 @@
 model Outcome {
-  id       String @id @default(uuid())
-  marketId String
-  name     String
+  id           String    @id @default(uuid())
+  marketId     String
+  name         String
+  description  String?
+  isWinner     Boolean?
+  resolvedAt   DateTime?
+  createdAt    DateTime  @default(now())
 
   market Market @relation(fields: [marketId], references: [id], onDelete: Cascade)
 
