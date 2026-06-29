@@ -1,32 +1,34 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
 import db from "@repo/db";
-import { ok } from "../utils/response";
+import { CommonSchema } from "validation";
+import { ok, fail } from "../utils/response";
 
 export const tradeController = {
-    // GET /trades — user's trade history
     async listByUser(request: FastifyRequest, reply: FastifyReply) {
-        const userId = (request.user as { userId: string }).userId;
-        const { page = "1", limit = "50" } = request.query as { page?: string; limit?: string };
-        const skip = (Number(page) - 1) * Number(limit);
+        const userId = request.user.sub;
+        const q = CommonSchema.pagination.safeParse(request.query);
+        if (!q.success) return reply.code(400).send(fail(q.error.message));
+        const { page, limit } = q.data;
+        const skip = (page - 1) * limit;
 
         const trades = await db.trade.findMany({
             where: { OR: [{ buyerId: userId }, { sellerId: userId }] },
             include: { market: { select: { symbol: true } } },
             orderBy: { createdAt: "desc" },
             skip,
-            take: Math.min(Number(limit), 100),
+            take: limit,
         });
 
         return reply.send(ok(trades));
     },
 
-    // GET /markets/:id/trades — public trade tape
     async listByMarket(request: FastifyRequest, reply: FastifyReply) {
-        const { id: marketId } = request.params as { id: string };
-        const { limit = "50" } = request.query as { limit?: string };
+        const params = CommonSchema.idParam.safeParse(request.params);
+        if (!params.success) return reply.code(400).send(fail(params.error.message));
+        const { limit = 50 } = CommonSchema.pagination.parse(request.query);
 
         const trades = await db.trade.findMany({
-            where: { marketId },
+            where: { marketId: params.data.id },
             select: {
                 id: true,
                 price: true,
@@ -35,7 +37,7 @@ export const tradeController = {
                 createdAt: true,
             },
             orderBy: { createdAt: "desc" },
-            take: Math.min(Number(limit), 200),
+            take: Math.min(limit, 200),
         });
 
         return reply.send(ok(trades));
