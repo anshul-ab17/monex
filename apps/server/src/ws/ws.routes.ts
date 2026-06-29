@@ -2,7 +2,7 @@ import type { FastifyInstance } from "fastify";
 import type { WebSocket } from "@fastify/websocket";
 import { wsBroadcaster } from "./ws.broadcaster";
 
-const VALID_CHANNELS = /^market:(trades|depth|ticker):[a-f0-9-]{36}$/;
+const VALID_CHANNELS = /^market:(trades|depth|ticker|orderbook):[a-f0-9-]{36}$/;
 
 export async function wsRoutes(app: FastifyInstance) {
     app.get("/ws", { websocket: true }, (socket: WebSocket) => {
