@@ -1,13 +1,36 @@
 import db from "@repo/db";
 import Decimal from "decimal.js";
+import { redis } from "@repo/redis";
 
 interface PriceLevel {
     price: string;
     quantity: string;
 }
 
+interface DepthSnapshot {
+    bids: PriceLevel[];
+    asks: PriceLevel[];
+    timestamp: string;
+}
+
+const DEPTH_CACHE_TTL = 2;
+const DEPTH_KEY = (marketId: string) => `depth:${marketId}`;
+
 export const depthService = {
-    async getDepth(marketId: string, levels = 20) {
+    async getDepth(marketId: string, levels = 20): Promise<DepthSnapshot> {
+        const cached = await redis.get(DEPTH_KEY(marketId));
+        if (cached) {
+            const snap: DepthSnapshot = JSON.parse(cached);
+            return {
+                bids: snap.bids.slice(0, levels),
+                asks: snap.asks.slice(0, levels),
+                timestamp: snap.timestamp,
+            };
+        }
+        return this.buildAndCache(marketId, levels);
+    },
+
+    async buildAndCache(marketId: string, levels = 50): Promise<DepthSnapshot> {
         const orders = await db.order.findMany({
             where: { marketId, status: { in: ["OPEN", "PARTIALLY_FILLED"] }, type: "LIMIT" },
             select: { side: true, price: true, remainingQty: true },
@@ -30,9 +53,23 @@ export const depthService = {
                 .slice(0, levels)
                 .map(([price, quantity]) => ({ price, quantity: quantity.toFixed() }));
 
-        return {
-            bids: toSorted(bidsMap, false), // highest first
-            asks: toSorted(asksMap, true),  // lowest first
+        const snapshot: DepthSnapshot = {
+            bids: toSorted(bidsMap, false),
+            asks: toSorted(asksMap, true),
+            timestamp: new Date().toISOString(),
         };
+
+        await redis.setex(DEPTH_KEY(marketId), DEPTH_CACHE_TTL, JSON.stringify(snapshot));
+
+        await redis.publish(`market:depth:${marketId}`, JSON.stringify({
+            event: "depth",
+            payload: snapshot,
+        }));
+
+        return snapshot;
+    },
+
+    async invalidate(marketId: string) {
+        await this.buildAndCache(marketId);
     },
 };
