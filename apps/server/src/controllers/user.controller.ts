@@ -5,7 +5,7 @@ import { NotFoundError } from "../utils/errors";
 
 export const userController = {
     async getMe(request: FastifyRequest, reply: FastifyReply) {
-        const { userId } = request.user as { userId: string };
+        const userId = request.user.sub;
         const user = await db.user.findUnique({
             where: { id: userId },
             select: { id: true, walletAddress: true, createdAt: true },
@@ -15,7 +15,7 @@ export const userController = {
     },
 
     async updateMe(request: FastifyRequest, reply: FastifyReply) {
-        const { userId } = request.user as { userId: string };
+        const userId = request.user.sub;
         const user = await db.user.findUnique({
             where: { id: userId },
             select: { id: true, walletAddress: true, createdAt: true },
