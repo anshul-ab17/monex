@@ -13,6 +13,9 @@ declare module "fastify" {
         producer: typeof kafkaProducer;
         consumer: typeof kafkaConsumer;
     }
+    interface FastifyRequest {
+        correlationId: string;
+    }
 }
 
 declare module "@fastify/jwt" {
