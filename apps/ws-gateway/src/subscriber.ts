@@ -1,4 +1,4 @@
-import Redis from "ioredis";
+import { Redis } from "@repo/redis";
 import type { ConnectionManager } from "./connections";
 import { encodeEnvelope } from "@repo/proto";
 
@@ -7,6 +7,7 @@ const EVENT_TO_PROTO: Record<string, string> = {
     depth: "DepthSnapshot",
     ticker: "TickerUpdate",
     candle: "Candle",
+    orderbook: "DepthSnapshot",
 };
 
 export function createSubscriber(connections: ConnectionManager) {
@@ -15,6 +16,25 @@ export function createSubscriber(connections: ConnectionManager) {
 
     sub.connect().catch((err) => {
         console.error("Redis subscriber connect failed:", err);
+    });
+
+    // Also listen on pattern for user channels
+    sub.on("pmessage", async (_pattern: string, channel: string, message: string) => {
+        let protoBytes: Uint8Array | undefined;
+        try {
+            const parsed = JSON.parse(message);
+            const protoType = EVENT_TO_PROTO[parsed.event];
+            if (protoType && parsed.payload) {
+                protoBytes = await encodeEnvelope(parsed.event, protoType, parsed.payload);
+            }
+        } catch {
+            // proto encoding failed
+        }
+        connections.broadcast(channel, message, protoBytes);
+    });
+
+    sub.psubscribe("user:*").catch((err) => {
+        console.error("[subscriber] failed to psubscribe user:*:", err);
     });
 
     sub.on("message", async (channel: string, message: string) => {

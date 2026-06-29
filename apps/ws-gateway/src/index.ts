@@ -8,7 +8,7 @@ const PORT = Number(process.env.WS_GATEWAY_PORT ?? 3002);
 const wss = new WebSocketServer({ port: PORT });
 const connections = new ConnectionManager();
 
-const VALID_CHANNELS = /^market:(trades|depth|ticker|candle):[a-f0-9-]{36}$/;
+const VALID_CHANNELS = /^(market:(trades|depth|ticker|candle|orderbook)|user):[a-f0-9-]{36}$/;
 
 const subscriber = createSubscriber(connections);
 

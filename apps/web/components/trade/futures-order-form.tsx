@@ -44,7 +44,7 @@ export function FuturesOrderForm({ marketId: _ }: FuturesOrderFormProps) {
                   "flex-1 cursor-pointer rounded-md py-1.5 text-[10px] font-medium transition-colors",
                   expiry === e.value
                     ? "bg-accent/20 text-accent border border-accent/30"
-                    : "bg-white/[0.03] text-text-muted hover:bg-white/[0.06] border border-transparent"
+                    : "bg-white/3 text-text-muted hover:bg-white/6 border border-transparent"
                 )}
               >
                 {e.label}
