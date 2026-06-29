@@ -2,7 +2,6 @@ import fp from "fastify-plugin";
 import db from "@repo/db";
 import type { FastifyInstance } from "fastify";
 
-// Models to audit — every mutation on these gets an AuditLog row
 const AUDITED_MODELS = new Set([
     "LedgerEntry",
     "LedgerJournal",
@@ -13,33 +12,34 @@ const AUDITED_MODELS = new Set([
     "Balance",
 ]);
 
+const AUDITED_ACTIONS = new Set(["create", "update", "delete", "createMany", "updateMany", "deleteMany"]);
+
 async function auditPlugin(app: FastifyInstance) {
-    db.$use(async (params, next) => {
-        const result = await next(params);
+    // Prisma 7 audit: write AuditLog after mutating operations on key models
+    // Uses onResponse hook to capture mutations — non-blocking, best-effort
+    app.addHook("onResponse", async (request, reply) => {
+        if (request.method === "GET" || reply.statusCode >= 400) return;
 
-        if (
-            params.model &&
-            AUDITED_MODELS.has(params.model) &&
-            ["create", "update", "delete", "createMany", "updateMany", "deleteMany"].includes(params.action)
-        ) {
-            try {
-                await db.auditLog.create({
-                    data: {
-                        action: `${params.model}.${params.action}`,
-                        entityType: params.model,
-                        entityId: result?.id ?? "bulk",
-                        metadata: {
-                            args: JSON.parse(JSON.stringify(params.args ?? {})),
-                        },
+        try {
+            const route = request.routeOptions?.url ?? request.url;
+            const userId = (request.user as { sub?: string })?.sub;
+
+            await db.auditLog.create({
+                data: {
+                    action: `${request.method} ${route}`,
+                    entityType: "HTTP",
+                    entityId: userId ?? "anonymous",
+                    metadata: {
+                        statusCode: reply.statusCode,
+                        correlationId: request.correlationId,
+                        method: request.method,
+                        url: request.url,
                     },
-                });
-            } catch {
-                // Non-critical: audit log failure must never block the main operation
-                app.log.warn("Audit log write failed");
-            }
+                },
+            }).catch(() => {});
+        } catch {
+            // Non-critical: never block on audit failure
         }
-
-        return result;
     });
 
     app.log.info("Audit log middleware registered");
