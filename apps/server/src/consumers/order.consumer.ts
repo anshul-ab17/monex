@@ -6,6 +6,7 @@ import { findOrderById, setOrderStatus } from "../services/order/order.repositor
 import { depthService } from "../services/market/depth.service";
 import { redis } from "@repo/redis";
 import { decodeEnvelope, decode } from "@repo/proto";
+import { userEventsService } from "../services/user/user-events.service";
 
 interface OrderEngineEvent {
     eventType: string;
@@ -48,6 +49,8 @@ export async function startOrderConsumer() {
                     });
                 });
                 if (marketId) await broadcastDepth(marketId);
+                const order = await findOrderById(orderId);
+                if (order) await userEventsService.publishOrderUpdate(order.userId, { orderId, status: "OPEN", marketId: marketId ?? "" });
                 return;
             }
 

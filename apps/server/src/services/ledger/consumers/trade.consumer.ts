@@ -9,6 +9,7 @@ import { tickerService } from "../../market/ticker.service";
 import { positionService } from "../../position/position.service";
 import { redis } from "@repo/redis";
 import { decodeEnvelope, decode } from "@repo/proto";
+import { userEventsService } from "../../user/user-events.service";
 
 async function parseTradeEvent(event: TradeExecutedEvent & { __raw?: Buffer }): Promise<TradeExecutedEvent | null> {
     if (event.__raw) {
@@ -128,6 +129,16 @@ export async function startTradeConsumer() {
             }));
 
             await tickerService.publishTicker(marketId);
+
+            // Notify users about order fills
+            await userEventsService.publishOrderUpdate(buyerId, {
+                orderId: buyOrderId, status: "FILL", marketId,
+                filledQty: qtyD.toString(), price,
+            });
+            await userEventsService.publishOrderUpdate(sellerId, {
+                orderId: sellOrderId, status: "FILL", marketId,
+                filledQty: qtyD.toString(), price,
+            });
         },
     );
 }
