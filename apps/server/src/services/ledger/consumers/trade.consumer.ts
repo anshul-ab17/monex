@@ -15,57 +15,96 @@ export async function startTradeConsumer() {
         async (event) => {
             if (event.eventType !== TradeEventType.EXECUTED) return;
 
-            const { tradeId, buyerId, sellerId, quantity, price } = event.payload;
+            const {
+                tradeId,
+                buyOrderId,
+                sellOrderId,
+                buyerId,
+                sellerId,
+                marketId,
+                quantity,
+                price,
+                makerFee,
+                takerFee,
+                takerSide,
+            } = event.payload;
 
-            const trade = await db.trade.findUnique({
-                where: { id: tradeId },
-                include: { market: true },
-            });
-            if (!trade) return;
+            // Idempotency: skip if already processed
+            const existing = await db.trade.findUnique({ where: { id: tradeId } });
+            if (existing) return;
+
+            const market = await db.market.findUnique({ where: { id: marketId } });
+            if (!market) return;
 
             const priceD = new Decimal(price);
             const qtyD = new Decimal(quantity);
+            const makerFeeD = new Decimal(makerFee);
+            const takerFeeD = new Decimal(takerFee);
 
+            // INSERT Trade record first
+            const trade = await db.trade.create({
+                data: {
+                    id: tradeId,
+                    marketId,
+                    buyerId,
+                    sellerId,
+                    buyOrderId,
+                    sellOrderId,
+                    takerSide: takerSide as "BUY" | "SELL",
+                    price: priceD.toString(),
+                    quantity: qtyD.toString(),
+                    makerFee: makerFeeD.toString(),
+                    takerFee: takerFeeD.toString(),
+                    fee: makerFeeD.add(takerFeeD).toString(),
+                },
+            });
+
+            // Settle balances in ledger
             await ledgerService.settleTrade({
                 tradeId,
                 buyerId,
                 sellerId,
-                baseAssetId: trade.market.baseAssetId,
-                quoteAssetId: trade.market.quoteAssetId,
+                baseAssetId: market.baseAssetId,
+                quoteAssetId: market.quoteAssetId,
                 quantity: qtyD,
                 price: priceD,
-                makerFee: new Decimal(trade.makerFee.toString()),
-                takerFee: new Decimal(trade.takerFee.toString()),
-                takerSide: trade.takerSide,
+                makerFee: makerFeeD,
+                takerFee: takerFeeD,
+                takerSide: takerSide as "BUY" | "SELL",
             });
 
-            await candleService.updateFromTrade(trade.marketId, priceD, qtyD, trade.createdAt);
+            // Update order fill quantities (best-effort, engine also tracks)
+            await db.order.update({
+                where: { id: buyOrderId },
+                data: {
+                    filledQty: { increment: qtyD.toString() },
+                    remainingQty: { decrement: qtyD.toString() },
+                },
+            }).catch(() => {});
 
-            const candleMsg = JSON.stringify({
+            await db.order.update({
+                where: { id: sellOrderId },
+                data: {
+                    filledQty: { increment: qtyD.toString() },
+                    remainingQty: { decrement: qtyD.toString() },
+                },
+            }).catch(() => {});
+
+            // Aggregate candles
+            await candleService.updateFromTrade(marketId, priceD, qtyD, trade.createdAt);
+
+            // Publish real-time updates
+            await redis.publish(`market:candle:${marketId}`, JSON.stringify({
                 event: "candle",
-                payload: {
-                    marketId: trade.marketId,
-                    price: price,
-                    quantity: quantity,
-                    timestamp: trade.createdAt.toISOString(),
-                },
-            });
-            await redis.publish(`market:candle:${trade.marketId}`, candleMsg);
+                payload: { marketId, price, quantity, timestamp: trade.createdAt.toISOString() },
+            }));
 
-            const tradeMsg = JSON.stringify({
+            await redis.publish(`market:trades:${marketId}`, JSON.stringify({
                 event: "trade",
-                payload: {
-                    tradeId: event.payload.tradeId,
-                    marketId: trade.marketId,
-                    price: event.payload.price,
-                    quantity: event.payload.quantity,
-                    takerSide: trade.takerSide,
-                    timestamp: trade.createdAt.toISOString(),
-                },
-            });
-            await redis.publish(`market:trades:${trade.marketId}`, tradeMsg);
+                payload: { tradeId, marketId, price, quantity, takerSide, timestamp: trade.createdAt.toISOString() },
+            }));
 
-            await tickerService.publishTicker(trade.marketId);
+            await tickerService.publishTicker(marketId);
         },
     );
 }
