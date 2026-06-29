@@ -2,13 +2,11 @@ export interface SettleTradeInput {
     tradeId: string;
     buyerId: string;
     sellerId: string;
+    baseAssetId: string;
+    quoteAssetId: string;
     quantity: string;
     price: string;
-    fee: string;
-}
-
-export async function settleTrade(
-  input: SettleTradeInput,
-) {
-  return input;
+    makerFee: string;
+    takerFee: string;
+    takerSide: "BUY" | "SELL";
 }

@@ -4,9 +4,3 @@ export interface ReserveInput {
     amount: string;
     referenceId: string;
 }
-
-export async function reserve(
-  input: ReserveInput,
-) {
-  return input;
-}

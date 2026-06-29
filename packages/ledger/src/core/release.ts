@@ -4,9 +4,3 @@ export interface ReleaseInput {
     amount: string;
     referenceId: string;
 }
-
-export async function release(
-  input: ReleaseInput,
-) {
-  return input;
-}
