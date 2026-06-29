@@ -7,7 +7,7 @@ import {
     getMasterWallet,
     deriveTokenAccount,
     normalizeAmount,
-} from "solana";
+} from "@repo/solana";
 import { ledgerService } from "../ledger/ledger.service";
 import { BadRequestError, NotFoundError } from "../../utils/errors";
 

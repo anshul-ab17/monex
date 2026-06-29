@@ -1,5 +1,5 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
-import { PredictionSchema, CommonSchema } from "validation";
+import { PredictionSchema, CommonSchema } from "@repo/validation";
 import { predictionService } from "../services/market/prediction.service";
 import { ok, fail } from "../utils/response";
 

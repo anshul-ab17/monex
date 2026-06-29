@@ -1,6 +1,6 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
 import db from "@repo/db";
-import { CommonSchema } from "validation";
+import { CommonSchema } from "@repo/validation";
 import { ok, fail } from "../utils/response";
 
 export const tradeController = {

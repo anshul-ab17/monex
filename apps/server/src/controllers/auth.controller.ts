@@ -1,6 +1,6 @@
 import type { FastifyRequest, FastifyReply, FastifyInstance } from "fastify";
 import { AuthService } from "../services/auth/auth.service";
-import { AuthSchema } from "validation";
+import { AuthSchema } from "@repo/validation";
 import { ok, fail } from "../utils/response";
 import { AppError } from "../utils/errors";
 import { authPublisher } from "../publishers/auth.publisher";

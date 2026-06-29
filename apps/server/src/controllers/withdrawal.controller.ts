@@ -1,5 +1,5 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
-import { WalletSchema } from "validation";
+import { WalletSchema } from "@repo/validation";
 import { ok, fail } from "../utils/response";
 import { withdrawalService } from "../services/wallet/withdrawal.service";
 import { walletPublisher } from "../publishers/wallet.publisher";

@@ -3,7 +3,7 @@ import db from "@repo/db";
 import { kafkaConsumer, KafkaTopics } from "@repo/kafka";
 import { WalletEventType } from "@repo/events";
 import type { WithdrawalRequestedEvent } from "@repo/events";
-import { getMasterWallet, sendSol, sendToken } from "solana";
+import { getMasterWallet, sendSol, sendToken } from "@repo/solana";
 
 export async function startWithdrawalConsumer() {
     await kafkaConsumer.subscribe<WithdrawalRequestedEvent>(

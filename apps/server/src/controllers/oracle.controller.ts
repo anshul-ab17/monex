@@ -1,5 +1,5 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
-import { CommonSchema } from "validation";
+import { CommonSchema } from "@repo/validation";
 import { oracleService } from "../services/oracle/oracle.service";
 import { ok, fail } from "../utils/response";
 

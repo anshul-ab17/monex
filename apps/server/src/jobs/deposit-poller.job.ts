@@ -10,7 +10,7 @@ import {
     parseTransfer,
     parseTokenTransfer,
     normalizeAmount,
-} from "solana";
+} from "@repo/solana";
 import { ledgerService } from "../services/ledger/ledger.service";
 
 const POLL_INTERVAL_MS = 30_000;

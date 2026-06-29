@@ -1,5 +1,5 @@
 import db from "@repo/db";
-import { getMasterWallet, deriveTokenAccount } from "solana";
+import { getMasterWallet, deriveTokenAccount } from "@repo/solana";
 import { NotFoundError } from "../../utils/errors";
 
 export const walletService = {

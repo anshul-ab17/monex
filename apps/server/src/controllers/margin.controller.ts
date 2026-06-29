@@ -1,6 +1,6 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
 import Decimal from "decimal.js";
-import { CommonSchema } from "validation";
+import { CommonSchema } from "@repo/validation";
 import { marginService } from "../services/margin/margin.service";
 import { ok, fail } from "../utils/response";
 import { z } from "zod";

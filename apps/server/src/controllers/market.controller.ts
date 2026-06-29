@@ -1,6 +1,6 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
 import { z } from "zod";
-import { CommonSchema } from "validation";
+import { CommonSchema } from "@repo/validation";
 import { marketService } from "../services/market/market.service";
 import { candleService } from "../services/market/candle.service";
 import { depthService } from "../services/market/depth.service";

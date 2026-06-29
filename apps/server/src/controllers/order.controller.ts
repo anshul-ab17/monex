@@ -1,5 +1,5 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
-import { OrderSchema } from "validation";
+import { OrderSchema } from "@repo/validation";
 import { ok, fail } from "../utils/response";
 import { orderService } from "../services/order/order.service";
 import { orderPublisher } from "../publishers/order.publisher";

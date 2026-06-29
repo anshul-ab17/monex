@@ -4,7 +4,7 @@ import { marketService } from "../market/market.service";
 import { insertOrder, findOrderById, findOrdersByUser, setOrderStatus } from "./order.repository";
 import { BadRequestError, NotFoundError, InsufficientBalanceError } from "../../utils/errors";
 import { riskService } from "../risk/risk.service";
-import type { CreateOrderInput } from "validation";
+import type { CreateOrderInput } from "@repo/validation";
 
 export const orderService = {
     async create(userId: string, input: CreateOrderInput) {

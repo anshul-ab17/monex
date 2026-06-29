@@ -2,9 +2,9 @@ import Decimal from "decimal.js";
 import bs58 from "bs58";
 import db from "@repo/db";
 import { redis } from "@repo/redis";
-import { verifySignature, validateAddress } from "solana";
+import { verifySignature, validateAddress } from "@repo/solana";
 import { BadRequestError, NotFoundError, InsufficientBalanceError } from "../../utils/errors";
-import type { WithdrawInput } from "validation";
+import type { WithdrawInput } from "@repo/validation";
 
 const COOLDOWN_SECONDS = 24 * 60 * 60; // 24 hours
 const DAILY_LIMIT = new Decimal("10000"); // USDC equivalent daily limit
