@@ -8,13 +8,31 @@ import { candleService } from "../../market/candle.service";
 import { tickerService } from "../../market/ticker.service";
 import { positionService } from "../../position/position.service";
 import { redis } from "@repo/redis";
+import { decodeEnvelope, decode } from "@repo/proto";
+
+async function parseTradeEvent(event: TradeExecutedEvent & { __raw?: Buffer }): Promise<TradeExecutedEvent | null> {
+    if (event.__raw) {
+        const envelope = await decodeEnvelope(new Uint8Array(event.__raw));
+        if (envelope.eventType !== TradeEventType.EXECUTED) return null;
+        const inner = await decode<TradeExecutedEvent["payload"]>("TradeExecuted", new Uint8Array(envelope.payload));
+        return {
+            eventId: inner.tradeId,
+            eventType: envelope.eventType as typeof TradeEventType.EXECUTED,
+            timestamp: new Date(envelope.timestamp).toISOString(),
+            version: envelope.version,
+            payload: inner,
+        };
+    }
+    return event;
+}
 
 export async function startTradeConsumer() {
-    await kafkaConsumer.subscribe<TradeExecutedEvent>(
+    await kafkaConsumer.subscribe<TradeExecutedEvent & { __raw?: Buffer }>(
         "monex-trade-ledger-consumer",
         KafkaTopics.TRADES,
-        async (event) => {
-            if (event.eventType !== TradeEventType.EXECUTED) return;
+        async (rawEvent) => {
+            const event = await parseTradeEvent(rawEvent);
+            if (!event || event.eventType !== TradeEventType.EXECUTED) return;
 
             const {
                 tradeId,

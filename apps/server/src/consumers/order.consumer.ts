@@ -5,17 +5,28 @@ import { OrderEventType } from "@repo/events";
 import { findOrderById, setOrderStatus } from "../services/order/order.repository";
 import { depthService } from "../services/market/depth.service";
 import { redis } from "@repo/redis";
+import { decodeEnvelope, decode } from "@repo/proto";
 
 interface OrderEngineEvent {
     eventType: string;
-    payload: { orderId: string; userId?: string; marketId?: string; remainingQty?: string };
+    payload: { orderId: string; userId?: string; marketId?: string; remainingQty?: string; reason?: string };
+    __raw?: Buffer;
+}
+
+async function parseEvent(event: OrderEngineEvent): Promise<OrderEngineEvent> {
+    if (event.__raw) {
+        const envelope = await decodeEnvelope(new Uint8Array(event.__raw));
+        const inner = await decode<{ orderId: string; marketId: string; eventType: string; reason: string; remainingQty: string }>(
+            "OrderEvent", new Uint8Array(envelope.payload),
+        );
+        return { eventType: envelope.eventType, payload: inner };
+    }
+    return event;
 }
 
 async function broadcastDepth(marketId: string) {
     try {
-        const depth = await depthService.getDepth(marketId);
-        const msg = JSON.stringify({ event: "depth", payload: depth });
-        await redis.publish(`market:depth:${marketId}`, msg);
+        await depthService.invalidate(marketId);
     } catch {
         // non-critical
     }
@@ -25,7 +36,8 @@ export async function startOrderConsumer() {
     await kafkaConsumer.subscribe<OrderEngineEvent>(
         "monex-order-consumer",
         KafkaTopics.ORDERS,
-        async (event) => {
+        async (rawEvent) => {
+            const event = await parseEvent(rawEvent);
             const { orderId, marketId, remainingQty } = event.payload;
 
             if (event.eventType === OrderEventType.ACCEPTED) {

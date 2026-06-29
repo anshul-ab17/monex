@@ -77,6 +77,9 @@ importers:
       '@repo/kafka':
         specifier: workspace:*
         version: link:../../packages/kafka
+      '@repo/proto':
+        specifier: workspace:*
+        version: link:../../packages/proto
       '@repo/redis':
         specifier: workspace:*
         version: link:../../packages/redis
