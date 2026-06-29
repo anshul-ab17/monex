@@ -8,20 +8,30 @@ import type { CreateOrderInput } from "validation";
 
 export const orderService = {
     async create(userId: string, input: CreateOrderInput) {
-        if (input.type === "MARKET") {
-            throw new BadRequestError("MARKET orders require live engine — use LIMIT");
-        }
-
         const market = await marketService.assertActive(input.marketId);
         const quantity = new Decimal(input.quantity);
-
+        const isMarket = input.type === "MARKET";
         const isStop = input.type === "STOP_LIMIT" || input.type === "STOP_MARKET";
-        const price = input.type === "STOP_MARKET"
-            ? (input.stopPrice ? new Decimal(input.stopPrice) : new Decimal(0))
-            : new Decimal(input.price!);
+
+        // MARKET orders use best available price; reserve full balance for BUY
+        const price = isMarket
+            ? new Decimal(0)
+            : input.type === "STOP_MARKET"
+                ? (input.stopPrice ? new Decimal(input.stopPrice) : new Decimal(0))
+                : new Decimal(input.price!);
 
         const assetId = input.side === "BUY" ? market.quoteAssetId : market.baseAssetId;
-        const reserveAmt = input.side === "BUY" ? price.mul(quantity) : quantity;
+
+        // For MARKET BUY: reserve full available balance (filled at best price)
+        let reserveAmt: Decimal;
+        if (isMarket && input.side === "BUY") {
+            const balance = await db.balance.findUnique({
+                where: { userId_assetId: { userId, assetId } },
+            });
+            reserveAmt = balance ? new Decimal(balance.available.toString()) : new Decimal(0);
+        } else {
+            reserveAmt = input.side === "BUY" ? price.mul(quantity) : quantity;
+        }
 
         const riskCheck = await riskService.preTradeCheck({
             userId, marketId: input.marketId, side: input.side, price, quantity, assetId,
