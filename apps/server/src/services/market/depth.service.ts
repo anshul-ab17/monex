@@ -1,6 +1,7 @@
 import db from "@repo/db";
 import Decimal from "decimal.js";
 import { redis } from "@repo/redis";
+import { orderbookCacheService } from "./orderbook-cache.service";
 
 interface PriceLevel {
     price: string;
@@ -65,6 +66,14 @@ export const depthService = {
             event: "depth",
             payload: snapshot,
         }));
+
+        // Sync orderbook snapshot for WS gateway
+        await orderbookCacheService.publishUpdate(marketId, {
+            bids: snapshot.bids.map((b) => [b.price, b.quantity]),
+            asks: snapshot.asks.map((a) => [a.price, a.quantity]),
+            sequence: Date.now(),
+            timestamp: snapshot.timestamp,
+        });
 
         return snapshot;
     },
