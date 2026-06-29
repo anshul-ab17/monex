@@ -2,17 +2,27 @@ import Decimal from "decimal.js";
 import db from "@repo/db";
 import { redis } from "@repo/redis";
 import { ledgerService } from "../ledger/ledger.service";
+import { oracleService } from "../oracle/oracle.service";
 
 const FUNDING_INTERVAL_MS = 8 * 60 * 60 * 1000; // 8 hours
 const MAX_FUNDING_RATE = new Decimal("0.01"); // 1% cap
 
 export const fundingService = {
     async computeFundingRate(marketId: string): Promise<Decimal> {
-        const ticker = await redis.get(`ticker:${marketId}`);
-        if (!ticker) return new Decimal(0);
+        const market = await db.market.findUnique({ where: { id: marketId }, select: { symbol: true } });
+        if (!market) return new Decimal(0);
 
-        const { lastPrice } = JSON.parse(ticker);
-        const markPrice = new Decimal(lastPrice);
+        // Prefer oracle mark price, fall back to ticker last price
+        let markPrice: Decimal;
+        const oraclePrice = await oracleService.getMarkPrice(market.symbol);
+        if (oraclePrice) {
+            markPrice = oraclePrice;
+        } else {
+            const ticker = await redis.get(`ticker:${marketId}`);
+            if (!ticker) return new Decimal(0);
+            const { lastPrice } = JSON.parse(ticker);
+            markPrice = new Decimal(lastPrice);
+        }
 
         // Simple funding: (mark - index) / index
         // Using 24h VWAP as index price proxy
