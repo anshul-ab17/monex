@@ -1,5 +1,5 @@
 {
-  "name": "ledger",
+  "name": "@repo/ledger",
   "module": "index.ts",
   "type": "module",
   "private": true,
