@@ -19,6 +19,6 @@ function wrap(fn: (req: FastifyRequest, reply: FastifyReply) => Promise<unknown>
 }
 
 export async function userRoutes(app: FastifyInstance) {
-    app.get("/user/me", { preHandler: [authenticate] }, wrap(userController.getMe, app));
-    app.patch("/user/me", { preHandler: [authenticate] }, wrap(userController.updateMe, app));
+    app.get("/user/me", { preHandler: [authenticate], schema: { tags: ["User"], summary: "Get current user profile", security: [{ bearerAuth: [] }] } }, wrap(userController.getMe, app));
+    app.patch("/user/me", { preHandler: [authenticate], schema: { tags: ["User"], summary: "Update current user profile", security: [{ bearerAuth: [] }] } }, wrap(userController.updateMe, app));
 }

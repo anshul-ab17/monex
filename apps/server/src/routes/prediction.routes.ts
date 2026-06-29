@@ -19,11 +19,8 @@ function wrap(fn: (req: FastifyRequest, reply: FastifyReply) => Promise<unknown>
 }
 
 export async function predictionRoutes(app: FastifyInstance) {
-    // Public
-    app.get("/predict/markets", wrap(predictionController.list, app));
-    app.get("/predict/markets/:id", wrap(predictionController.getById, app));
-
-    // Admin (auth required — in production, add admin role check)
-    app.post("/predict/markets", { preHandler: [authenticate] }, wrap(predictionController.create, app));
-    app.post("/predict/markets/:id/resolve", { preHandler: [authenticate] }, wrap(predictionController.resolve, app));
+    app.get("/predict/markets", { schema: { tags: ["Predictions"], summary: "List prediction markets" } }, wrap(predictionController.list, app));
+    app.get("/predict/markets/:id", { schema: { tags: ["Predictions"], summary: "Get prediction market by ID" } }, wrap(predictionController.getById, app));
+    app.post("/predict/markets", { preHandler: [authenticate], schema: { tags: ["Predictions"], summary: "Create prediction market", security: [{ bearerAuth: [] }] } }, wrap(predictionController.create, app));
+    app.post("/predict/markets/:id/resolve", { preHandler: [authenticate], schema: { tags: ["Predictions"], summary: "Resolve prediction market", security: [{ bearerAuth: [] }] } }, wrap(predictionController.resolve, app));
 }

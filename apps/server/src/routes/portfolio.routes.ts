@@ -19,7 +19,7 @@ function wrap(fn: (req: FastifyRequest, reply: FastifyReply) => Promise<unknown>
 }
 
 export async function portfolioRoutes(app: FastifyInstance) {
-    app.get("/portfolio", { preHandler: [authenticate] }, wrap(portfolioController.getPortfolio, app));
-    app.get("/portfolio/fee-tier", { preHandler: [authenticate] }, wrap(portfolioController.getFeeTier, app));
-    app.get("/fee-tiers", wrap(portfolioController.listFeeTiers, app));
+    app.get("/portfolio", { preHandler: [authenticate], schema: { tags: ["Portfolio"], summary: "Get user portfolio", security: [{ bearerAuth: [] }] } }, wrap(portfolioController.getPortfolio, app));
+    app.get("/portfolio/fee-tier", { preHandler: [authenticate], schema: { tags: ["Portfolio"], summary: "Get user fee tier", security: [{ bearerAuth: [] }] } }, wrap(portfolioController.getFeeTier, app));
+    app.get("/fee-tiers", { schema: { tags: ["Portfolio"], summary: "List all fee tiers" } }, wrap(portfolioController.listFeeTiers, app));
 }

@@ -19,6 +19,6 @@ function wrap(fn: (req: FastifyRequest, reply: FastifyReply) => Promise<unknown>
 }
 
 export async function tradeRoutes(app: FastifyInstance) {
-    app.get("/trades", { preHandler: [authenticate] }, wrap(tradeController.listByUser, app));
-    app.get("/markets/:id/trades", wrap(tradeController.listByMarket, app));
+    app.get("/trades", { preHandler: [authenticate], schema: { tags: ["Trades"], summary: "List user trades", security: [{ bearerAuth: [] }] } }, wrap(tradeController.listByUser, app));
+    app.get("/markets/:id/trades", { schema: { tags: ["Trades"], summary: "List trades by market" } }, wrap(tradeController.listByMarket, app));
 }

@@ -20,8 +20,8 @@ function wrap(fn: (req: FastifyRequest, reply: FastifyReply) => Promise<unknown>
 export async function authRoutes(app: FastifyInstance) {
     const ctrl = new AuthController(app);
 
-    app.get("/auth/nonce", wrap(ctrl.getNonce.bind(ctrl), app));
-    app.post("/auth/wallet", wrap(ctrl.walletLogin.bind(ctrl), app));
-    app.post("/auth/refresh", wrap(ctrl.refresh.bind(ctrl), app));
-    app.post("/auth/logout", wrap(ctrl.logout.bind(ctrl), app));
+    app.get("/auth/nonce", { schema: { tags: ["Auth"], summary: "Get nonce for wallet signature", querystring: { type: "object", properties: { walletAddress: { type: "string" } }, required: ["walletAddress"] } } }, wrap(ctrl.getNonce.bind(ctrl), app));
+    app.post("/auth/wallet", { schema: { tags: ["Auth"], summary: "Login with wallet signature", body: { type: "object", properties: { walletAddress: { type: "string" }, signature: { type: "string" }, nonce: { type: "string" } }, required: ["walletAddress", "signature", "nonce"] } } }, wrap(ctrl.walletLogin.bind(ctrl), app));
+    app.post("/auth/refresh", { schema: { tags: ["Auth"], summary: "Refresh access token", body: { type: "object", properties: { refresh: { type: "string" } }, required: ["refresh"] } } }, wrap(ctrl.refresh.bind(ctrl), app));
+    app.post("/auth/logout", { schema: { tags: ["Auth"], summary: "Logout and revoke tokens", security: [{ bearerAuth: [] }] } }, wrap(ctrl.logout.bind(ctrl), app));
 }

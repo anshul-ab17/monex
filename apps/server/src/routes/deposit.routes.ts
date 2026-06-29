@@ -21,7 +21,7 @@ function wrap(fn: (req: FastifyRequest, reply: FastifyReply) => Promise<unknown>
 export async function depositRoutes(app: FastifyInstance) {
     const ctrl = new WalletController();
 
-    app.post("/deposit", { preHandler: [authenticate] }, wrap(ctrl.submitDeposit.bind(ctrl), app));
-    app.get("/deposit", { preHandler: [authenticate] }, wrap(ctrl.getDeposits.bind(ctrl), app));
-    app.get("/deposit/:id", { preHandler: [authenticate] }, wrap(ctrl.getDepositById.bind(ctrl), app));
+    app.post("/deposit", { preHandler: [authenticate], schema: { tags: ["Deposits"], summary: "Submit on-chain deposit tx", security: [{ bearerAuth: [] }], body: { type: "object", properties: { txHash: { type: "string" } }, required: ["txHash"] } } }, wrap(ctrl.submitDeposit.bind(ctrl), app));
+    app.get("/deposit", { preHandler: [authenticate], schema: { tags: ["Deposits"], summary: "List user deposits", security: [{ bearerAuth: [] }] } }, wrap(ctrl.getDeposits.bind(ctrl), app));
+    app.get("/deposit/:id", { preHandler: [authenticate], schema: { tags: ["Deposits"], summary: "Get deposit by ID", security: [{ bearerAuth: [] }] } }, wrap(ctrl.getDepositById.bind(ctrl), app));
 }

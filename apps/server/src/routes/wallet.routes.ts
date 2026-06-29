@@ -21,6 +21,6 @@ function wrap(fn: (req: FastifyRequest, reply: FastifyReply) => Promise<unknown>
 export async function walletRoutes(app: FastifyInstance) {
     const ctrl = new WalletController();
 
-    app.get("/wallet/balances", { preHandler: [authenticate] }, wrap(ctrl.getBalances.bind(ctrl), app));
-    app.get("/wallet/deposit-address", { preHandler: [authenticate] }, wrap(ctrl.getDepositAddress.bind(ctrl), app));
+    app.get("/wallet/balances", { preHandler: [authenticate], schema: { tags: ["Wallet"], summary: "Get all balances", security: [{ bearerAuth: [] }] } }, wrap(ctrl.getBalances.bind(ctrl), app));
+    app.get("/wallet/deposit-address", { preHandler: [authenticate], schema: { tags: ["Wallet"], summary: "Get Solana deposit address", security: [{ bearerAuth: [] }] } }, wrap(ctrl.getDepositAddress.bind(ctrl), app));
 }

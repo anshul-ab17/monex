@@ -19,7 +19,7 @@ function wrap(fn: (req: FastifyRequest, reply: FastifyReply) => Promise<unknown>
 export async function withdrawalRoutes(app: FastifyInstance) {
     const ctrl = new WithdrawalController();
 
-    app.post("/withdrawal", { preHandler: [authenticate] }, wrap(ctrl.requestWithdrawal.bind(ctrl), app));
-    app.get("/withdrawal", { preHandler: [authenticate] }, wrap(ctrl.getWithdrawals.bind(ctrl), app));
-    app.get("/withdrawal/:id", { preHandler: [authenticate] }, wrap(ctrl.getWithdrawalById.bind(ctrl), app));
+    app.post("/withdrawal", { preHandler: [authenticate], schema: { tags: ["Withdrawals"], summary: "Request withdrawal", security: [{ bearerAuth: [] }], body: { type: "object", properties: { assetId: { type: "string", format: "uuid" }, amount: { type: "number" }, destinationAddress: { type: "string" }, signature: { type: "string" } }, required: ["assetId", "amount", "destinationAddress", "signature"] } } }, wrap(ctrl.requestWithdrawal.bind(ctrl), app));
+    app.get("/withdrawal", { preHandler: [authenticate], schema: { tags: ["Withdrawals"], summary: "List user withdrawals", security: [{ bearerAuth: [] }] } }, wrap(ctrl.getWithdrawals.bind(ctrl), app));
+    app.get("/withdrawal/:id", { preHandler: [authenticate], schema: { tags: ["Withdrawals"], summary: "Get withdrawal by ID", security: [{ bearerAuth: [] }] } }, wrap(ctrl.getWithdrawalById.bind(ctrl), app));
 }

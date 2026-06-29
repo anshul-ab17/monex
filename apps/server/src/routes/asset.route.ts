@@ -18,6 +18,6 @@ function wrap(fn: (req: FastifyRequest, reply: FastifyReply) => Promise<unknown>
 }
 
 export async function assetRoutes(app: FastifyInstance) {
-    app.get("/assets", wrap(assetController.list, app));
-    app.get("/assets/:id", wrap(assetController.getById, app));
+    app.get("/assets", { schema: { tags: ["Assets"], summary: "List all assets" } }, wrap(assetController.list, app));
+    app.get("/assets/:id", { schema: { tags: ["Assets"], summary: "Get asset by ID", params: { type: "object", properties: { id: { type: "string", format: "uuid" } } } } }, wrap(assetController.getById, app));
 }
