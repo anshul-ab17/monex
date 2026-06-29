@@ -3,6 +3,7 @@ import db from "@repo/db";
 import { marginService } from "../margin/margin.service";
 import { positionService } from "../position/position.service";
 import { ledgerService } from "../ledger/ledger.service";
+import { userEventsService } from "../user/user-events.service";
 
 export interface LiquidationResult {
     userId: string;
@@ -121,7 +122,7 @@ export const liquidationService = {
         const diff = exitPrice.sub(entryPrice);
         const realizedLoss = pos.side === "LONG" ? diff.mul(qty) : diff.neg().mul(qty);
 
-        return {
+        const result = {
             userId: pos.userId,
             marketId: pos.marketId,
             positionId: pos.positionId,
@@ -131,5 +132,15 @@ export const liquidationService = {
             closedQty: qty.toString(),
             realizedLoss: realizedLoss.toString(),
         };
+
+        await userEventsService.publishLiquidation(pos.userId, {
+            marketId: pos.marketId,
+            side: pos.side,
+            closedQty: qty.toString(),
+            markPrice: pos.markPrice.toString(),
+            realizedLoss: realizedLoss.toString(),
+        });
+
+        return result;
     },
 };
