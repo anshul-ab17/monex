@@ -15,6 +15,8 @@ import { startDepositPoller } from "./src/jobs/deposit-poller.job";
 import { loadPendingOrders } from "./src/jobs/engine-recovery.job";
 import { startPredictionExpiryJob } from "./src/jobs/prediction-expiry.job";
 import { startFundingJob } from "./src/jobs/funding.job";
+import { startLiquidationJob } from "./src/jobs/liquidation.job";
+import { startPredictionOracleJob } from "./src/jobs/prediction-oracle.job";
 import { wsRoutes } from "./src/ws/ws.routes";
 import { register, httpRequestDuration } from "./src/utils/metrics";
 import auditPlugin from "./src/plugins/audit";
@@ -104,6 +106,8 @@ export async function createHttpServer() {
         startDepositPoller();
         startPredictionExpiryJob();
         startFundingJob();
+        startLiquidationJob();
+        startPredictionOracleJob();
         if (env.USE_KAFKA) {
             // Small delay to allow engine to subscribe before replaying
             setTimeout(() => loadPendingOrders().catch(app.log.error), 5000);
