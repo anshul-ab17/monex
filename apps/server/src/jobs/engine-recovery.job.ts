@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import db from "@repo/db";
 import { kafkaProducer, KafkaTopics } from "@repo/kafka";
 import { OrderEventType } from "@repo/events";
@@ -23,7 +24,10 @@ export async function loadPendingOrders() {
 
     for (const order of orders) {
         await kafkaProducer.publish(KafkaTopics.ENGINE, {
+            eventId: randomUUID(),
             eventType: OrderEventType.CREATED,
+            timestamp: new Date().toISOString(),
+            version: 1,
             payload: {
                 orderId: order.id,
                 userId: order.userId,
