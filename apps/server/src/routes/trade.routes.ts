@@ -1,5 +1,5 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
-import { userController } from "../controllers/user.controller";
+import { tradeController } from "../controllers/trade.controller";
 import { AppError } from "../utils/errors";
 import { fail } from "../utils/response";
 import { authenticate } from "../middleware/auth.middleware";
@@ -18,7 +18,7 @@ function wrap(fn: (req: FastifyRequest, reply: FastifyReply) => Promise<unknown>
     };
 }
 
-export async function userRoutes(app: FastifyInstance) {
-    app.get("/user/me", { preHandler: [authenticate] }, wrap(userController.getMe, app));
-    app.patch("/user/me", { preHandler: [authenticate] }, wrap(userController.updateMe, app));
+export async function tradeRoutes(app: FastifyInstance) {
+    app.get("/trades", { preHandler: [authenticate] }, wrap(tradeController.listByUser, app));
+    app.get("/markets/:id/trades", wrap(tradeController.listByMarket, app));
 }

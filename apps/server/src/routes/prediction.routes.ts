@@ -1,5 +1,5 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
-import { userController } from "../controllers/user.controller";
+import { predictionController } from "../controllers/prediction.controller";
 import { AppError } from "../utils/errors";
 import { fail } from "../utils/response";
 import { authenticate } from "../middleware/auth.middleware";
@@ -18,7 +18,12 @@ function wrap(fn: (req: FastifyRequest, reply: FastifyReply) => Promise<unknown>
     };
 }
 
-export async function userRoutes(app: FastifyInstance) {
-    app.get("/user/me", { preHandler: [authenticate] }, wrap(userController.getMe, app));
-    app.patch("/user/me", { preHandler: [authenticate] }, wrap(userController.updateMe, app));
+export async function predictionRoutes(app: FastifyInstance) {
+    // Public
+    app.get("/predict/markets", wrap(predictionController.list, app));
+    app.get("/predict/markets/:id", wrap(predictionController.getById, app));
+
+    // Admin (auth required — in production, add admin role check)
+    app.post("/predict/markets", { preHandler: [authenticate] }, wrap(predictionController.create, app));
+    app.post("/predict/markets/:id/resolve", { preHandler: [authenticate] }, wrap(predictionController.resolve, app));
 }
