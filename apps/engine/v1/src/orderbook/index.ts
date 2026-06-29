@@ -17,7 +17,7 @@ class OrderBookStore {
 
     async loadFromDb(): Promise<void> {
         const orders = await db.order.findMany({
-            where: { status: { in: ["OPEN", "PENDING"] }, type: "LIMIT" },
+            where: { status: { in: ["OPEN", "PENDING", "PARTIALLY_FILLED"] }, type: "LIMIT" },
         });
         for (const o of orders) {
             if (!o.price) continue;
