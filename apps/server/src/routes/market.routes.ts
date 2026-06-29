@@ -1,7 +1,8 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { marketController } from "../controllers/market.controller";
+import { fundingService } from "../services/market/funding.service";
 import { AppError } from "../utils/errors";
-import { fail } from "../utils/response";
+import { ok, fail } from "../utils/response";
 
 function wrap(fn: (req: FastifyRequest, reply: FastifyReply) => Promise<unknown>, app: FastifyInstance) {
     return async (request: FastifyRequest, reply: FastifyReply) => {
@@ -23,4 +24,8 @@ export async function marketRoutes(app: FastifyInstance) {
     app.get("/markets/:id/candles", wrap(marketController.getCandles, app));
     app.get("/markets/:id/depth", wrap(marketController.getDepth, app));
     app.get("/markets/:id/ticker", wrap(marketController.getTicker, app));
+    app.get("/markets/:id/funding", wrap(async (request: FastifyRequest, reply: FastifyReply) => {
+        const { id } = request.params as { id: string };
+        return reply.send(ok(await fundingService.getFundingRate(id)));
+    }, app));
 }
