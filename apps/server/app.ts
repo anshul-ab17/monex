@@ -13,9 +13,12 @@ import { startConsumers } from "./src/consumers";
 import { startCleanupJob } from "./src/jobs/cleanup.job";
 import { startDepositPoller } from "./src/jobs/deposit-poller.job";
 import { loadPendingOrders } from "./src/jobs/engine-recovery.job";
+import { startPredictionExpiryJob } from "./src/jobs/prediction-expiry.job";
+import { startFundingJob } from "./src/jobs/funding.job";
 import { wsRoutes } from "./src/ws/ws.routes";
 import { register, httpRequestDuration } from "./src/utils/metrics";
 import auditPlugin from "./src/plugins/audit";
+import { registerCorrelationId } from "./src/utils/logger";
 
 
 export async function createHttpServer() {
@@ -34,6 +37,8 @@ export async function createHttpServer() {
     await app.register(jwtPlugin);
     await app.register(auditPlugin);
     await app.register(wsPlugin);
+
+    registerCorrelationId(app);
 
     await app.register(rateLimit, {
         max: 100,
@@ -97,6 +102,8 @@ export async function createHttpServer() {
         await startConsumers();
         startCleanupJob();
         startDepositPoller();
+        startPredictionExpiryJob();
+        startFundingJob();
         if (env.USE_KAFKA) {
             // Small delay to allow engine to subscribe before replaying
             setTimeout(() => loadPendingOrders().catch(app.log.error), 5000);
