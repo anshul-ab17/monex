@@ -1,0 +1,232 @@
+asyncapi: 3.0.0
+info:
+  title: Monex Real-Time API
+  version: 1.0.0
+  description: WebSocket and Kafka event streams for Monex exchange
+
+servers:
+  ws-fastify:
+    host: localhost:3001
+    pathname: /api/v1/ws
+    protocol: ws
+    description: In-process Fastify WebSocket
+  ws-gateway:
+    host: localhost:3002
+    protocol: ws
+    description: Standalone WebSocket gateway (JSON + protobuf)
+  kafka:
+    host: localhost:9092
+    protocol: kafka
+    description: Internal Kafka broker
+
+channels:
+  # ── WebSocket Public Channels ──────────────────────────
+
+  market-trades:
+    address: "market:trades:{marketId}"
+    parameters:
+      marketId:
+        description: UUID of the market
+    messages:
+      trade:
+        payload:
+          type: object
+          properties:
+            tradeId: { type: string }
+            marketId: { type: string }
+            price: { type: string }
+            quantity: { type: string }
+            takerSide: { type: string, enum: [BUY, SELL] }
+            timestamp: { type: string, format: date-time }
+
+  market-depth:
+    address: "market:depth:{marketId}"
+    parameters:
+      marketId:
+        description: UUID of the market
+    messages:
+      depth:
+        payload:
+          type: object
+          properties:
+            bids: { type: array, items: { type: array, items: { type: string } } }
+            asks: { type: array, items: { type: array, items: { type: string } } }
+
+  market-ticker:
+    address: "market:ticker:{marketId}"
+    parameters:
+      marketId:
+        description: UUID of the market
+    messages:
+      ticker:
+        payload:
+          type: object
+          properties:
+            marketId: { type: string }
+            lastPrice: { type: string }
+            high24h: { type: string }
+            low24h: { type: string }
+            volume24h: { type: string }
+            change24h: { type: string }
+
+  market-candle:
+    address: "market:candle:{marketId}"
+    parameters:
+      marketId:
+        description: UUID of the market
+    messages:
+      candle:
+        payload:
+          type: object
+          properties:
+            marketId: { type: string }
+            price: { type: string }
+            quantity: { type: string }
+            timestamp: { type: string, format: date-time }
+
+  market-orderbook:
+    address: "market:orderbook:{marketId}"
+    parameters:
+      marketId:
+        description: UUID of the market
+    messages:
+      orderbook:
+        payload:
+          type: object
+          properties:
+            bids: { type: array }
+            asks: { type: array }
+            timestamp: { type: string, format: date-time }
+
+  # ── WebSocket Authenticated User Channel ───────────────
+
+  user-events:
+    address: "user:{userId}"
+    parameters:
+      userId:
+        description: UUID of the authenticated user
+    messages:
+      order_update:
+        payload:
+          type: object
+          properties:
+            event: { type: string, const: order_update }
+            payload:
+              type: object
+              properties:
+                orderId: { type: string }
+                status: { type: string }
+                marketId: { type: string }
+                filledQty: { type: string }
+                price: { type: string }
+      balance_change:
+        payload:
+          type: object
+          properties:
+            event: { type: string, const: balance_change }
+            payload:
+              type: object
+              properties:
+                assetId: { type: string }
+                available: { type: string }
+                locked: { type: string }
+                changeType: { type: string, enum: [TRADE, DEPOSIT, WITHDRAWAL, FUNDING, LIQUIDATION] }
+      position_update:
+        payload:
+          type: object
+          properties:
+            event: { type: string, const: position_update }
+            payload:
+              type: object
+              properties:
+                marketId: { type: string }
+                side: { type: string }
+                quantity: { type: string }
+                avgEntryPrice: { type: string }
+      liquidation:
+        payload:
+          type: object
+          properties:
+            event: { type: string, const: liquidation }
+            payload:
+              type: object
+              properties:
+                marketId: { type: string }
+                side: { type: string }
+                closedQty: { type: string }
+                markPrice: { type: string }
+                realizedLoss: { type: string }
+
+  # ── Kafka Topics ───────────────────────────────────────
+
+  kafka-orders:
+    address: monex.orders
+    messages:
+      order-event:
+        description: Engine order lifecycle events (ACCEPTED, REJECTED, CANCELLED, FILLED, PARTIALLY_FILLED)
+        contentType: application/octet-stream
+        payload:
+          type: object
+          properties:
+            eventType: { type: string }
+            payload:
+              type: object
+              properties:
+                orderId: { type: string }
+                marketId: { type: string }
+                reason: { type: string }
+
+  kafka-trades:
+    address: monex.trades
+    messages:
+      trade-executed:
+        description: Protobuf-encoded TradeExecuted wrapped in Envelope
+        contentType: application/octet-stream
+        payload:
+          type: object
+          properties:
+            tradeId: { type: string }
+            buyOrderId: { type: string }
+            sellOrderId: { type: string }
+            buyerId: { type: string }
+            sellerId: { type: string }
+            marketId: { type: string }
+            quantity: { type: string }
+            price: { type: string }
+            makerFee: { type: string }
+            takerFee: { type: string }
+            takerSide: { type: string }
+
+operations:
+  subscribeMarketTrades:
+    action: receive
+    channel: { $ref: "#/channels/market-trades" }
+    summary: Subscribe to live trade stream
+  subscribeDepth:
+    action: receive
+    channel: { $ref: "#/channels/market-depth" }
+    summary: Subscribe to order book depth updates
+  subscribeTicker:
+    action: receive
+    channel: { $ref: "#/channels/market-ticker" }
+    summary: Subscribe to 24h ticker updates
+  subscribeCandle:
+    action: receive
+    channel: { $ref: "#/channels/market-candle" }
+    summary: Subscribe to live candle updates
+  subscribeOrderbook:
+    action: receive
+    channel: { $ref: "#/channels/market-orderbook" }
+    summary: Subscribe to orderbook snapshots
+  subscribeUserEvents:
+    action: receive
+    channel: { $ref: "#/channels/user-events" }
+    summary: Subscribe to authenticated user events (requires JWT auth)
+  consumeOrders:
+    action: receive
+    channel: { $ref: "#/channels/kafka-orders" }
+    summary: Consume order engine events from Kafka
+  consumeTrades:
+    action: receive
+    channel: { $ref: "#/channels/kafka-trades" }
+    summary: Consume trade execution events from Kafka
