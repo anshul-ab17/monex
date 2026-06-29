@@ -7,4 +7,5 @@ export enum KafkaTopics {
     RISK = "risk",
     MARKET_DATA = "market-data",
     NOTIFICATIONS = "notifications",
+    ENGINE = "engine",
 }

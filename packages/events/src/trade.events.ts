@@ -12,10 +12,12 @@ export interface TradeExecutedPayload {
     sellOrderId: string;
     buyerId: string;
     sellerId: string;
+    marketId: string;
     quantity: string;
     price: string;
     makerFee: string;
     takerFee: string;
+    takerSide: "BUY" | "SELL";
 }
 
 export type TradeExecutedEvent =  BaseEvent<TradeExecutedPayload>;
