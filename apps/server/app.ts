@@ -20,6 +20,7 @@ import { startPredictionOracleJob } from "./src/jobs/prediction-oracle.job";
 import { wsRoutes } from "./src/ws/ws.routes";
 import { register, httpRequestDuration } from "./src/utils/metrics";
 import auditPlugin from "./src/plugins/audit";
+import swaggerPlugin from "./src/plugins/swagger";
 import { registerCorrelationId } from "./src/utils/logger";
 
 
@@ -38,6 +39,7 @@ export async function createHttpServer() {
     await app.register(KafkaPlugin);
     await app.register(jwtPlugin);
     await app.register(auditPlugin);
+    await app.register(swaggerPlugin);
     await app.register(wsPlugin);
 
     registerCorrelationId(app);
