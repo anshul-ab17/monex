@@ -33,6 +33,8 @@
     "solana": "workspace:*",
     "tweetnacl": "^1.0.3",
     "validation": "workspace:*",
-    "zod": "^4.4.3"
+    "zod": "^4.4.3",
+    "prom-client": "^15.1.3",
+    "@fastify/rate-limit": "^10.2.2"
   }
 }
