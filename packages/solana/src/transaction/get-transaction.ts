@@ -1,10 +1,9 @@
-import { connection } from "../client/connection";
+import { withRetry } from "../client/connection";
 
-export async function getTransaction( signature: string,) {
-    return connection.getParsedTransaction(
-        signature,
-        {
-        maxSupportedTransactionVersion: 0,
-        },
+export async function getTransaction(signature: string) {
+    return withRetry((conn) =>
+        conn.getParsedTransaction(signature, {
+            maxSupportedTransactionVersion: 0,
+        }),
     );
 }

@@ -11,5 +11,6 @@ export async function sendSol(from: Keypair, toAddress: string, amount: Decimal)
             lamports,
         }),
     );
+    // sendAndConfirmTransaction needs the raw connection (manages retries internally)
     return sendAndConfirmTransaction(connection, tx, [from]);
 }
