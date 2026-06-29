@@ -1,6 +1,7 @@
 import db from "@repo/db";
 import Decimal from "decimal.js";
 import { InsufficientBalanceError } from "../../utils/errors";
+import { AccountType } from "@repo/ledger";
 import {
     getUserAccount,
     getOrCreateUserAccount,

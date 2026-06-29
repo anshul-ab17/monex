@@ -1,13 +1,14 @@
 import type db from "@repo/db";
+import type { SettleTradeInput, ReserveInput, ReleaseInput } from "@repo/ledger";
 
 type Tx = Parameters<Parameters<(typeof db)["$transaction"]>[0]>[0];
 
-// Mirrors the Prisma LedgerReferenceType enum values
 type ReferenceType = "DEPOSIT" | "WITHDRAWAL" | "TRADE" | "FEE" | "ADJUSTMENT";
+
+export type { SettleTradeInput, ReserveInput, ReleaseInput };
 
 export interface EntryInput {
     accountId: string;
-    // positive = credit, negative = debit
     amount: string;
     description?: string;
 }
