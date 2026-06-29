@@ -6,7 +6,7 @@ export class KafkaConsumer {
     async subscribe<T>(
         groupId: string,
         topic: string,
-        handler: (message:T, rawMessage: EachMessagePayload) => Promise<void>,
+        handler: (message: T, rawMessage: EachMessagePayload) => Promise<void>,
     ): Promise<Consumer> {
         const consumer = kafka.consumer({
             groupId,
@@ -38,11 +38,19 @@ export class KafkaConsumer {
                         parsedMessage,
                         payload,
                     );
-                } catch (error) {
-                    console.error(
-                        `Failed to process message from topic ${topic}`,
-                        error,
-                    );
+                } catch {
+                    // Not JSON — pass raw buffer as-is for proto consumers
+                    try {
+                        await handler(
+                            { __raw: message.value } as unknown as T,
+                            payload,
+                        );
+                    } catch (error) {
+                        console.error(
+                            `Failed to process message from topic ${topic}`,
+                            error,
+                        );
+                    }
                 }
             },
         });
