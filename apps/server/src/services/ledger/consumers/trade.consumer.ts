@@ -6,6 +6,7 @@ import type { TradeExecutedEvent } from "@repo/events";
 import { ledgerService } from "../ledger.service";
 import { candleService } from "../../market/candle.service";
 import { tickerService } from "../../market/ticker.service";
+import { positionService } from "../../position/position.service";
 import { redis } from "@repo/redis";
 
 export async function startTradeConsumer() {
@@ -89,6 +90,10 @@ export async function startTradeConsumer() {
                     remainingQty: { decrement: qtyD.toString() },
                 },
             }).catch(() => {});
+
+            // Update positions
+            await positionService.updateFromTrade({ userId: buyerId, marketId, side: "BUY", quantity: qtyD, price: priceD });
+            await positionService.updateFromTrade({ userId: sellerId, marketId, side: "SELL", quantity: qtyD, price: priceD });
 
             // Aggregate candles
             await candleService.updateFromTrade(marketId, priceD, qtyD, trade.createdAt);
