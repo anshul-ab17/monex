@@ -96,6 +96,7 @@ impl OrderBook {
     }
 
     pub fn match_order(&mut self, order: &BookOrder) -> Vec<MatchResult> {
+        let is_market = order.order_type == "MARKET";
         let mut matches = Vec::new();
         let mut remaining = order.remaining_qty;
 
@@ -103,7 +104,10 @@ impl OrderBook {
             Side::Buy => {
                 let mut exhausted_prices = Vec::new();
                 for (&ask_price, level) in self.asks.iter_mut() {
-                    if remaining.is_zero() || order.price < ask_price {
+                    if remaining.is_zero() {
+                        break;
+                    }
+                    if !is_market && order.price < ask_price {
                         break;
                     }
                     Self::match_against_level(level, &mut remaining, &mut matches);
@@ -118,7 +122,10 @@ impl OrderBook {
             Side::Sell => {
                 let mut exhausted_prices = Vec::new();
                 for (&bid_price, level) in self.bids.iter_mut().rev() {
-                    if remaining.is_zero() || order.price > bid_price {
+                    if remaining.is_zero() {
+                        break;
+                    }
+                    if !is_market && order.price > bid_price {
                         break;
                     }
                     Self::match_against_level(level, &mut remaining, &mut matches);
