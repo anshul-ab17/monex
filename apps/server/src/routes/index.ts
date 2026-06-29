@@ -12,6 +12,8 @@ import { withdrawalRoutes } from "./withdrawal.routes";
 import { tradeRoutes } from "./trade.routes";
 import { predictionRoutes } from "./prediction.routes";
 import { portfolioRoutes } from "./portfolio.routes";
+import { oracleRoutes } from "./oracle.routes";
+import { marginRoutes } from "./margin.routes";
 
 export default async function routes(
   app: FastifyInstance
@@ -27,4 +29,6 @@ export default async function routes(
   await tradeRoutes(app);
   await predictionRoutes(app);
   await portfolioRoutes(app);
+  await oracleRoutes(app);
+  await marginRoutes(app);
 }
