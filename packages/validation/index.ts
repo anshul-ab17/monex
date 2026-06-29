@@ -4,4 +4,5 @@ export * from "./order/orderSchema";
 export * from "./user/userSchema";
 export * from "./wallet/walletSchema";
 export * from "./market/market.schema"
+export * from "./prediction/prediction.schema"
 export * from "./common.schema";
