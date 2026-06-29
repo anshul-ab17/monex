@@ -48,6 +48,8 @@ impl MatchingEngine {
     }
 
     pub fn process_order(&mut self, order: BookOrder) -> OrderResult {
+        let is_market = order.order_type == "MARKET";
+
         if order.order_type == "STOP_LIMIT" || order.order_type == "STOP_MARKET" {
             let stops = self.stop_orders.entry(order.market_id.clone()).or_default();
             stops.push(StopOrder { order });
@@ -66,9 +68,9 @@ impl MatchingEngine {
         let matches = book.match_order(&order);
 
         if matches.is_empty() {
-            if order.time_in_force == "IOC" || order.time_in_force == "FOK" {
+            if is_market || order.time_in_force == "IOC" || order.time_in_force == "FOK" {
                 return OrderResult::Rejected {
-                    reason: "no liquidity for IOC/FOK".to_string(),
+                    reason: "no liquidity".to_string(),
                 };
             }
             book.add(&order);
@@ -105,12 +107,13 @@ impl MatchingEngine {
 
         if remaining.is_zero() {
             OrderResult::Filled { trades }
-        } else if order.time_in_force == "GTC" {
+        } else if !is_market && order.time_in_force == "GTC" {
             let mut rest = order.clone();
             rest.remaining_qty = remaining;
             book.add(&rest);
             OrderResult::PartiallyFilled { trades, remaining }
         } else {
+            // MARKET / IOC / FOK: fill what's available, discard rest
             OrderResult::Filled { trades }
         }
     }
@@ -209,6 +212,62 @@ mod tests {
             }
             _ => panic!("expected Filled"),
         }
+    }
+
+    fn market_order(id: &str, side: Side, qty: rust_decimal::Decimal) -> BookOrder {
+        BookOrder {
+            order_id: id.to_string(),
+            user_id: "u2".to_string(),
+            market_id: "SOL-USDC".to_string(),
+            side,
+            price: rust_decimal::Decimal::ZERO,
+            remaining_qty: qty,
+            sequence_number: 2,
+            time_in_force: "IOC".to_string(),
+            post_only: false,
+            stop_price: None,
+            order_type: "MARKET".to_string(),
+        }
+    }
+
+    #[test]
+    fn test_market_buy_fills_at_best_ask() {
+        let mut engine = setup();
+        engine.process_order(limit_order("s1", Side::Sell, dec!(100), dec!(5)));
+        engine.process_order(limit_order("s2", Side::Sell, dec!(101), dec!(3)));
+        let result = engine.process_order(market_order("m1", Side::Buy, dec!(7)));
+        match result {
+            OrderResult::Filled { trades } => {
+                assert_eq!(trades.len(), 2);
+                assert_eq!(trades[0].price, dec!(100));
+                assert_eq!(trades[0].quantity, dec!(5));
+                assert_eq!(trades[1].price, dec!(101));
+                assert_eq!(trades[1].quantity, dec!(2));
+            }
+            _ => panic!("expected Filled"),
+        }
+    }
+
+    #[test]
+    fn test_market_sell_fills_at_best_bid() {
+        let mut engine = setup();
+        engine.process_order(limit_order("b1", Side::Buy, dec!(100), dec!(5)));
+        let result = engine.process_order(market_order("m1", Side::Sell, dec!(3)));
+        match result {
+            OrderResult::Filled { trades } => {
+                assert_eq!(trades.len(), 1);
+                assert_eq!(trades[0].price, dec!(100));
+                assert_eq!(trades[0].quantity, dec!(3));
+            }
+            _ => panic!("expected Filled"),
+        }
+    }
+
+    #[test]
+    fn test_market_no_liquidity_rejected() {
+        let mut engine = setup();
+        let result = engine.process_order(market_order("m1", Side::Buy, dec!(5)));
+        assert!(matches!(result, OrderResult::Rejected { .. }));
     }
 
     #[test]
