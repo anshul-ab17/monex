@@ -1,12 +1,8 @@
-import { randomUUID } from "crypto";
 import { kafkaProducer, KafkaTopics } from "@repo/kafka";
 import { WalletEventType } from "@repo/events";
 import type { DepositConfirmedPayload, WithdrawalRequestedPayload } from "@repo/events";
 import { env } from "@repo/config";
-
-function makeEvent<T>(eventType: string, payload: T) {
-    return { eventId: randomUUID(), eventType, timestamp: new Date().toISOString(), version: 1, payload };
-}
+import { makeEvent } from "./make-event";
 
 export const walletPublisher = {
     async depositConfirmed(payload: DepositConfirmedPayload) {
