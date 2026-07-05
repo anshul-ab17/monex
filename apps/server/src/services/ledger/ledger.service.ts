@@ -173,8 +173,19 @@ export class LedgerService {
 
     // Called when a user registers — creates a LedgerAccount + Balance row per asset
     async initUserAccounts(userId: string, assetIds: string[]) {
+        // Idempotent for Kafka at-least-once replay: skip assets that already
+        // have a USER account (safe because USER_REGISTERED is keyed by userId
+        // → single partition, processed sequentially, no concurrent replay).
+        // ponytail: existence filter; add @@unique([userId,assetId,type]) + upsert if replay ever becomes concurrent.
+        const existing = await this.db.ledgerAccount.findMany({
+            where: { userId, type: "USER" },
+            select: { assetId: true },
+        });
+        const existingAssetIds = new Set(existing.map((a) => a.assetId));
+        const newAssetIds = assetIds.filter((id) => !existingAssetIds.has(id));
+
         await this.db.$transaction(
-            assetIds.flatMap((assetId) => [
+            newAssetIds.flatMap((assetId) => [
                 this.db.ledgerAccount.create({
                     data: { userId, assetId, type: "USER" },
                 }),

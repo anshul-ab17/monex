@@ -3,6 +3,7 @@ import { kafka } from "./client";
 
 export class KafkaConsumer {
     private readonly consumers: Consumer[] = [];
+    private disconnected = false;
     async subscribe<T>(
         groupId: string,
         topic: string,
@@ -59,6 +60,8 @@ export class KafkaConsumer {
     }
 
     async disconnect(): Promise<void> {
+        if (this.disconnected) return;
+        this.disconnected = true;
         await Promise.all(
             this.consumers.map((consumer) =>
                 consumer.disconnect(),
