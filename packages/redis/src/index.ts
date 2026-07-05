@@ -1,4 +1,3 @@
-export * from "./cache";
 export * from "./client";
 export * from "./keys";
 export * from "./nonce";

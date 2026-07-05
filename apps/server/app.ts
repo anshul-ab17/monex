@@ -3,7 +3,6 @@ import cors from "@fastify/cors";
 import wsPlugin from "@fastify/websocket";
 import rateLimit from "@fastify/rate-limit";
 import routes from "./src/routes";
-import test from "./src/test";
 import { env } from "@repo/config";
 import redisPlugin from "./src/plugins/redis";
 import prismaPlugin from "./src/plugins/prisma";
@@ -97,10 +96,6 @@ export async function createHttpServer() {
     });
 
     await app.register(wsRoutes, { prefix: "/api/v1" });
-
-    await app.register(test, {
-        prefix:"temp/test/"
-    });
 
     app.addHook("onReady", async () => {
         await startConsumers();
