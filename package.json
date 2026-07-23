@@ -1,5 +1,5 @@
 {
-  "name": "monex",
+  "name": "reishi",
   "private": true,
   "workspaces": [
     "apps/*",

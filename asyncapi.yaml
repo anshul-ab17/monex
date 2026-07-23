@@ -1,8 +1,8 @@
 asyncapi: 3.0.0
 info:
-  title: Monex Real-Time API
+  title: Reishi Real-Time API
   version: 1.0.0
-  description: WebSocket and Kafka event streams for Monex exchange
+  description: WebSocket and Kafka event streams for Reishi exchange
 
 servers:
   ws-fastify:

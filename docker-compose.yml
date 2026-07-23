@@ -3,25 +3,25 @@ version: "3.9"
 services:
     postgres:
         image: postgres:17
-        container_name: monex-postgres
+        container_name: reishi-postgres
         restart: unless-stopped
         environment:
-            POSTGRES_USER: monex
-            POSTGRES_PASSWORD: monex
-            POSTGRES_DB: monex
+            POSTGRES_USER: reishi
+            POSTGRES_PASSWORD: reishi
+            POSTGRES_DB: reishi
         ports:
             - "5432:5432"
         volumes:
             - postgres_data:/var/lib/postgresql/data
         healthcheck:
-            test: ["CMD-SHELL", "pg_isready -U monex"]
+            test: ["CMD-SHELL", "pg_isready -U reishi"]
             interval: 10s
             timeout: 5s
             retries: 5
 
     redis:
         image: redis:8-alpine
-        container_name: monex-redis
+        container_name: reishi-redis
         restart: unless-stopped
         command: redis-server --appendonly yes
         ports:
@@ -36,7 +36,7 @@ services:
 
     redpanda:
         image: docker.redpanda.com/redpandadata/redpanda:v25.1.2
-        container_name: monex-redpanda
+        container_name: reishi-redpanda
         restart: unless-stopped
         command:
             - redpanda
