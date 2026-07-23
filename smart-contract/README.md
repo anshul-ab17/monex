@@ -1,6 +1,6 @@
-# Monex Smart Contract (Anchor)
+# Reishi Smart Contract (Anchor)
 
-On-chain layer for the Monex exchange: **asset/market registry + custody vaults + settlement ledger**. Matching stays off-chain (Rust engine); this program holds funds and records who owns what.
+On-chain layer for the Reishi exchange: **asset/market registry + custody vaults + settlement ledger**. Matching stays off-chain (Rust engine); this program holds funds and records who owns what.
 
 ## Program: `smart_contract`
 

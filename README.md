@@ -1,8 +1,8 @@
-# Monex
+# Reishi
 
-Monex is a production-grade dex: prediction market and exchange infrastructure built with TypeScript, designed for scalability, reliability, and financial correctness.
+Reishi is a production-grade dex: prediction market and exchange infrastructure built with TypeScript, designed for scalability, reliability, and financial correctness.
 
-Built on an event-driven architecture, Monex leverages Fastify, PostgreSQL, Redis, Redpanda (Kafka), and Solana to power high-performance trading and real-time market data.
+Built on an event-driven architecture, Reishi leverages Fastify, PostgreSQL, Redis, Redpanda (Kafka), and Solana to power high-performance trading and real-time market data.
 
 ## Features
 
@@ -34,10 +34,10 @@ Built on an event-driven architecture, Monex leverages Fastify, PostgreSQL, Redi
 
 ```bash
 # Clone the repository
-git clone https://github.com/anshul-ab17/monex.git
+git clone https://github.com/anshul-ab17/reishi.git
 
 # Move into the project directory
-cd monex
+cd reishi
 
 # Install dependencies
 pnpm install
@@ -97,8 +97,8 @@ packages/
 
 ## Architecture
 
-Monex follows an event-driven architecture where PostgreSQL acts as the source of truth, Redis manages ephemeral state and caching, and Redpanda (Kafka) enables asynchronous communication between services.
+Reishi follows an event-driven architecture where PostgreSQL acts as the source of truth, Redis manages ephemeral state and caching, and Redpanda (Kafka) enables asynchronous communication between services.
 
 ## System design
 
-![Monex System Design](./system-design/monex-architecture.svg)
+![Reishi System Design](./system-design/reishi-architecture.svg)
