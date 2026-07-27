@@ -5,7 +5,7 @@ import { handleOrderCreated } from "./engine";
 
 export async function startEngineConsumer() {
     await kafkaConsumer.subscribe<OrderCreatedEvent>(
-        "monex-engine-consumer",
+        "reishi-engine-consumer",
         KafkaTopics.ORDERS,
         async (event) => {
             if (event.eventType !== OrderEventType.CREATED) return;

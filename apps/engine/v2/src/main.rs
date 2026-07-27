@@ -26,7 +26,7 @@ async fn main() {
 
     let kafka_engine = engine.clone();
     tokio::spawn(async move {
-        run_consumer(&brokers, "monex-engine-v2", &topic, kafka_engine).await;
+        run_consumer(&brokers, "reishi-engine-v2", &topic, kafka_engine).await;
     });
 
     let app = Router::new()
