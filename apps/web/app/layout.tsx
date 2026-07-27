@@ -14,7 +14,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Monex — Decentralized Exchange",
+  title: "Reishi — Decentralized Exchange",
   description: "Trade crypto on Solana with speed and precision",
 };
 
