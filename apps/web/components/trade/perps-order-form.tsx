@@ -79,7 +79,7 @@ export function PerpsOrderForm({ marketId: _ }: PerpsOrderFormProps) {
             max={100}
             value={leverage}
             onChange={(e) => setLeverage(Number(e.target.value))}
-            className="w-full accent-[#3CE3AB]"
+            className="w-full accent-[#4DD6C2]"
           />
           <div className="mt-1 flex justify-between">
             {LEVERAGE_MARKS.map((m) => (

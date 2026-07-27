@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Zap, Shield, BarChart3, TrendingUp } from "lucide-react";
+import { Logo } from "@/components/layout/logo";
 
 const FEATURES = [
   {
@@ -30,15 +31,10 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background">
       {/* Nav */}
       <header className="flex items-center justify-between px-8 py-5">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent">
-            <span className="text-sm font-black text-white">M</span>
-          </div>
-          <span className="text-sm font-bold tracking-wide text-text-primary">MONEX</span>
-        </div>
+        <Logo href="/" />
         <Link
           href="/trade/sol-usdc"
-          className="rounded-lg bg-accent px-5 py-2 text-[13px] font-semibold text-white transition-all hover:bg-accent-hover hover:shadow-[0_0_20px_rgba(145,41,41,0.3)]"
+          className="rounded-lg bg-accent px-5 py-2 text-[13px] font-semibold text-[#04110E] transition-all hover:bg-accent-hover hover:shadow-[0_0_20px_rgba(77,214,194,0.35)]"
         >
           Launch App
         </Link>
@@ -46,14 +42,14 @@ export default function Home() {
 
       {/* Hero */}
       <section className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-        <div className="mb-6 flex items-center gap-2 rounded-full border border-white/10 bg-white/3 px-4 py-1.5">
-          <TrendingUp className="h-3.5 w-3.5 text-green" />
+        <div className="mb-6 flex items-center gap-2 rounded-full border border-border bg-white/[0.03] px-4 py-1.5">
+          <TrendingUp className="h-3.5 w-3.5 text-accent" />
           <span className="text-[12px] text-text-secondary">Built on Solana</span>
         </div>
         <h1 className="max-w-2xl text-[56px] font-bold leading-[1.1] tracking-tight text-text-primary">
           Trade on Solana.
           <br />
-          <span className="bg-linear-to-r from-accent to-rose-400 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-accent to-[#6FE0CF] bg-clip-text text-transparent">
             No compromises.
           </span>
         </h1>
@@ -64,7 +60,7 @@ export default function Home() {
         </p>
         <Link
           href="/trade/sol-usdc"
-          className="mt-8 inline-flex items-center gap-2 rounded-lg bg-accent px-8 py-3.5 text-[14px] font-bold text-white transition-all hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(145,41,41,0.25)]"
+          className="mt-8 inline-flex items-center gap-2 rounded-lg bg-accent px-8 py-3.5 text-[14px] font-bold text-[#04110E] transition-all hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(77,214,194,0.3)]"
         >
           Launch DEX <ArrowRight className="h-4 w-4" />
         </Link>
@@ -81,12 +77,12 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section className="border-t border-white/5 px-8 py-20">
+      <section className="border-t border-border px-8 py-20">
         <div className="mx-auto grid max-w-4xl gap-4 md:grid-cols-3">
           {FEATURES.map(({ icon: Icon, title, description }) => (
             <div
               key={title}
-              className="group rounded-xl border border-white/5 bg-white/2 p-6 transition-all hover:border-white/10 hover:bg-white/4"
+              className="group rounded-xl border border-border bg-card p-6 transition-all hover:border-accent/30 hover:bg-surface-hover"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
                 <Icon className="h-5 w-5 text-accent" />
@@ -99,8 +95,8 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 px-8 py-6 text-center text-[12px] text-text-muted">
-        Monex — Decentralized Exchange on Solana
+      <footer className="border-t border-border px-8 py-6 text-center text-[12px] text-text-muted">
+        Reishi — Decentralized Exchange on Solana
       </footer>
     </div>
   );
