@@ -7,7 +7,7 @@ import { getMasterWallet, sendSol, sendToken } from "@repo/solana";
 
 export async function startWithdrawalConsumer() {
     await kafkaConsumer.subscribe<WithdrawalRequestedEvent>(
-        "monex-withdrawal-consumer",
+        "reishi-withdrawal-consumer",
         KafkaTopics.WALLETS,
         async (event) => {
             if (event.eventType !== WalletEventType.WITHDRAWAL_REQUESTED) return;

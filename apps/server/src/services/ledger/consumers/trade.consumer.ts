@@ -29,7 +29,7 @@ async function parseTradeEvent(event: TradeExecutedEvent & { __raw?: Buffer }): 
 
 export async function startTradeConsumer() {
     await kafkaConsumer.subscribe<TradeExecutedEvent & { __raw?: Buffer }>(
-        "monex-trade-ledger-consumer",
+        "reishi-trade-ledger-consumer",
         KafkaTopics.TRADES,
         async (rawEvent) => {
             const event = await parseTradeEvent(rawEvent);

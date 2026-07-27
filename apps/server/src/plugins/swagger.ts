@@ -8,7 +8,7 @@ export default fp(async (app: FastifyInstance) => {
         openapi: {
             openapi: "3.1.0",
             info: {
-                title: "Monex API",
+                title: "Reishi API",
                 description: "Decentralized Solana crypto exchange — spot, prediction markets, perpetuals",
                 version: "1.0.0",
                 contact: { name: "Anshul Bharat", email: "anshul.ab17x@gmail.com" },

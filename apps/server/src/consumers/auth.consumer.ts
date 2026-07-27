@@ -7,7 +7,7 @@ import { ledgerService } from "../services/ledger";
 
 export async function startAuthConsumer() {
     await kafkaConsumer.subscribe<UserRegisteredEvent>(
-        "monex-auth-consumer",
+        "reishi-auth-consumer",
         KafkaTopics.AUTH,
         async (event) => {
             if (event.eventType !== AuthEventType.USER_REGISTERED) return;

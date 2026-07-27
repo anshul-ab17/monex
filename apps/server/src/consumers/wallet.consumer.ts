@@ -7,7 +7,7 @@ import { ledgerService } from "../services/ledger/ledger.service";
 
 export async function startWalletConsumer() {
     await kafkaConsumer.subscribe<DepositConfirmedEvent>(
-        "monex-wallet-consumer",
+        "reishi-wallet-consumer",
         KafkaTopics.WALLETS,
         async (event) => {
             if (event.eventType !== WalletEventType.DEPOSIT_CONFIRMED) return;

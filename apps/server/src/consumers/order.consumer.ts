@@ -35,7 +35,7 @@ async function broadcastDepth(marketId: string) {
 
 export async function startOrderConsumer() {
     await kafkaConsumer.subscribe<OrderEngineEvent>(
-        "monex-order-consumer",
+        "reishi-order-consumer",
         KafkaTopics.ORDERS,
         async (rawEvent) => {
             const event = await parseEvent(rawEvent);
