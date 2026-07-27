@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Wallet, ClipboardList } from "lucide-react";
 import { WalletButton } from "./wallet-button";
+import { Logo } from "./logo";
 
 const VERTICALS = [
   { href: "/trade/spot/sol-usdc",      label: "Spot",    match: "/trade/spot" },
@@ -22,13 +23,8 @@ export function Navbar() {
   const pathname = usePathname();
 
   return (
-    <header className="flex h-12 items-center border-b border-white/5 bg-surface px-4">
-      <Link href="/" className="mr-6 flex items-center gap-2">
-        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent">
-          <span className="text-xs font-black text-background">M</span>
-        </div>
-        <span className="text-sm font-bold tracking-wide text-text-primary">MONEX</span>
-      </Link>
+    <header className="flex h-12 items-center border-b border-border bg-surface px-4">
+      <Logo href="/" className="mr-6" />
 
       <nav className="flex items-center gap-1">
         {VERTICALS.map(({ href, label, match }) => {
@@ -49,7 +45,7 @@ export function Navbar() {
           );
         })}
 
-        <div className="mx-2 h-4 w-px bg-white/10" />
+        <div className="mx-2 h-4 w-px bg-border" />
 
         {UTIL_ITEMS.map(({ href, label, icon: Icon }) => {
           const active = pathname.startsWith(href);
